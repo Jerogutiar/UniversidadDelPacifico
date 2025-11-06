@@ -1,0 +1,625 @@
+/* ============================================
+   TEMA OSCURO/CLARO - VARIABLES CSS
+   Sistema de Carnet Digital - Universidad del Pacífico
+   ============================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  /* Colores institucionales Universidad del Pacífico */
+  --udp-blue: #2596be;
+  --udp-green: #37a372;
+  --udp-blue-dark: #1e7a9e;
+  --udp-green-dark: #2a8a5e;
+  --udp-blue-light: #4db8d4;
+  --udp-green-light: #5bb889;
+
+  /* Tema Claro (default) */
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f1f5f9;
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --text-tertiary: #64748b;
+  --border-color: #e2e8f0;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --accent-primary: var(--udp-blue);
+  --accent-secondary: var(--udp-green);
+  
+  /* Cards y componentes */
+  --card-bg: #ffffff;
+  --card-hover: #f8fafc;
+  --input-bg: #ffffff;
+  --input-border: #cbd5e0;
+  
+  /* Estados */
+  --success: var(--udp-green);
+  --error: #ef4444;
+  --warning: #f59e0b;
+  --info: var(--udp-blue);
+}
+
+[data-theme="dark"] {
+  /* Tema Oscuro - Mejorado (más oscuro, menos azul) */
+  --bg-primary: #0f1419;
+  --bg-secondary: #1a1f26;
+  --bg-tertiary: #252b33;
+  --text-primary: #e2e8f0;
+  --text-secondary: #cbd5e0;
+  --text-tertiary: #94a3b8;
+  --border-color: #334155;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.7);
+  --accent-primary: var(--udp-blue-light);
+  --accent-secondary: var(--udp-green-light);
+  
+  /* Cards y componentes */
+  --card-bg: #1a1f26;
+  --card-hover: #252b33;
+  --input-bg: #0f1419;
+  --input-border: #475569;
+  
+  /* Estados */
+  --success: var(--udp-green-light);
+  --error: #f87171;
+  --warning: #fbbf24;
+  --info: var(--udp-blue-light);
+}
+
+/* Transiciones suaves para cambio de tema */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* ============================================
+   RESET Y BASE
+   ============================================ */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+  transition: background-color 0.3s ease;
+}
+
+/* ============================================
+   DASHBOARD LAYOUT
+   ============================================ */
+
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg-primary);
+}
+
+/* Sidebar */
+.dashboard-sidebar {
+  width: 280px;
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+  box-shadow: var(--shadow-md);
+}
+
+.dashboard-sidebar-header {
+  padding: 24px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dashboard-logo {
+  height: 56px;
+  width: auto;
+  object-fit: contain;
+}
+
+.dashboard-sidebar-nav {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.dashboard-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  margin-bottom: 8px;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.dashboard-nav-item:hover {
+  background: var(--card-hover);
+  color: var(--text-primary);
+}
+
+.dashboard-nav-item.active {
+  background: var(--accent-primary);
+  color: white;
+  border-color: var(--accent-primary);
+}
+
+.dashboard-nav-item svg {
+  width: 20px;
+  height: 20px;
+}
+
+.dashboard-sidebar-footer {
+  padding: 16px;
+  border-top: 1px solid var(--border-color);
+}
+
+/* Main Content */
+.dashboard-main {
+  flex: 1;
+  margin-left: 280px;
+  min-height: 100vh;
+  overflow-x: hidden;
+  width: calc(100% - 280px);
+  max-width: calc(100% - 280px);
+  box-sizing: border-box;
+}
+
+.dashboard-header {
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  padding: 24px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
+  min-height: 72px;
+  gap: 16px; /* Espacio entre título y botón hamburger */
+}
+
+.dashboard-header-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  padding: 0;
+  line-height: 1.2;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dashboard-header-title::before {
+  content: '';
+  width: 4px;
+  height: 32px;
+  background: var(--udp-blue);
+  border-left: 2px solid var(--udp-green);
+  border-radius: 2px;
+  display: block;
+}
+
+.dashboard-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* ============================================
+   CONTENIDO PRINCIPAL DEL DASHBOARD
+   ============================================ */
+.dashboard-content {
+  padding: 32px;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Botón de menú móvil - Posicionado a la derecha */
+.mobile-menu-toggle {
+  display: none;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 10px 14px;
+  cursor: pointer;
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+  margin-left: auto; /* Empuja el botón a la derecha */
+  flex-shrink: 0; /* No se encoge */
+  z-index: 101; /* Encima del header pero debajo del sidebar */
+}
+
+.mobile-menu-toggle:hover {
+  background: var(--card-hover);
+  color: var(--accent-primary);
+}
+
+.mobile-menu-toggle svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* ============================================
+   CARDS
+   ============================================ */
+
+.card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.card-header {
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.card-subtitle {
+  font-size: 0.875rem;
+  color: var(--text-tertiary);
+}
+
+.card-body {
+  color: var(--text-secondary);
+}
+
+/* ============================================
+   GRID SYSTEM
+   ============================================ */
+
+.grid {
+  display: grid;
+  gap: 24px;
+}
+
+.grid-cols-1 { grid-template-columns: repeat(1, 1fr); }
+.grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+/* ============================================
+   BOTONES
+   ============================================ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* ============================================
+   BOTONES PRINCIPALES
+   Todos los botones usan azul institucional por defecto
+   y cambian a verde institucional en hover/active
+   ============================================ */
+.btn-primary {
+  background: var(--udp-blue) !important;
+  color: white !important;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+  background: var(--udp-green) !important;
+  color: white !important;
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.btn-primary.btn-green {
+  background: var(--udp-blue) !important;
+}
+
+.btn-primary.btn-green:hover,
+.btn-primary.btn-green:focus,
+.btn-primary.btn-green:active {
+  background: var(--udp-green) !important;
+}
+
+.btn-secondary {
+  background: var(--udp-blue) !important;
+  color: white !important;
+  border: 1px solid var(--udp-blue) !important;
+}
+
+.btn-secondary:hover,
+.btn-secondary:focus,
+.btn-secondary:active {
+  background: var(--udp-green) !important;
+  border-color: var(--udp-green) !important;
+  color: white !important;
+}
+
+.btn-secondary.btn-blue {
+  background: var(--udp-blue) !important;
+  color: white !important;
+  border-color: var(--udp-blue) !important;
+}
+
+.btn-secondary.btn-blue:hover,
+.btn-secondary.btn-blue:focus,
+.btn-secondary.btn-blue:active {
+  background: var(--udp-green) !important;
+  border-color: var(--udp-green) !important;
+}
+
+.btn-secondary.btn-green {
+  background: var(--udp-blue) !important;
+  color: white !important;
+  border-color: var(--udp-blue) !important;
+}
+
+.btn-secondary.btn-green:hover,
+.btn-secondary.btn-green:focus,
+.btn-secondary.btn-green:active {
+  background: var(--udp-green) !important;
+  border-color: var(--udp-green) !important;
+}
+
+.btn-danger {
+  background: var(--udp-blue) !important;
+  color: white !important;
+}
+
+.btn-danger:hover,
+.btn-danger:focus,
+.btn-danger:active {
+  background: var(--udp-green) !important;
+  color: white !important;
+}
+
+.btn-sm {
+  padding: 8px 16px;
+  font-size: 0.8125rem;
+}
+
+/* ============================================
+   FORMULARIOS
+   ============================================ */
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(37, 150, 190, 0.1);
+}
+
+.form-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.form-help {
+  margin-top: 6px;
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+/* ============================================
+   RESPONSIVE - TABLETAS Y MÓVILES
+   ============================================ */
+@media (max-width: 1024px) {
+  /* Sidebar oculto por defecto en móvil */
+  .dashboard-sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 1000; /* Debajo del overlay pero encima del contenido */
+    position: fixed;
+    height: 100vh;
+    top: 0;
+    left: 0;
+  }
+
+  .dashboard-sidebar.open {
+    transform: translateX(0);
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* El overlay se crea dinámicamente con JavaScript */
+
+  .dashboard-main {
+    margin-left: 0 !important;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Botón de menú móvil visible */
+  .mobile-menu-toggle {
+    display: inline-flex !important;
+  }
+
+  /* Grids se convierten en una columna */
+  .grid-cols-2,
+  .grid-cols-3,
+  .grid-cols-4 {
+    grid-template-columns: 1fr;
+  }
+  
+  /* Configuración de overflow para contenido */
+  .dashboard-content,
+  .dashboard-main {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+  }
+
+  /* Header con padding adicional para el botón */
+  .dashboard-header {
+    padding: 16px 20px;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Headers y contenido más compactos */
+  .dashboard-header {
+    padding: 12px 16px;
+    flex-wrap: nowrap;
+    gap: 12px;
+    min-height: 60px;
+  }
+
+  .dashboard-header-title {
+    font-size: 1.25rem;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .dashboard-content {
+    padding: 16px;
+    overflow-x: hidden;
+  }
+
+  .card {
+    padding: 16px;
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Listas responsivas */
+  .student-list,
+  .staff-list {
+    padding: 0;
+    margin: 0;
+  }
+  
+  .student-item,
+  .staff-item {
+    padding: 12px;
+    margin-bottom: 8px;
+  }
+
+  /* Botón hamburger más compacto en móvil */
+  .mobile-menu-toggle {
+    padding: 8px 12px;
+  }
+
+  .mobile-menu-toggle svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* ============================================
+   UTILIDADES
+   ============================================ */
+
+.text-primary { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-tertiary { color: var(--text-tertiary); }
+
+.bg-primary { background: var(--bg-primary); }
+.bg-secondary { background: var(--bg-secondary); }
+.bg-tertiary { background: var(--bg-tertiary); }
+
+.mt-1 { margin-top: 8px; }
+.mt-2 { margin-top: 16px; }
+.mt-3 { margin-top: 24px; }
+.mb-1 { margin-bottom: 8px; }
+.mb-2 { margin-bottom: 16px; }
+.mb-3 { margin-bottom: 24px; }
+
+.p-1 { padding: 8px; }
+.p-2 { padding: 16px; }
+.p-3 { padding: 24px; }
+
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-2 { gap: 16px; }
+.gap-3 { gap: 24px; }
+
+.hidden { display: none; }

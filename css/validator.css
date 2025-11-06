@@ -1,0 +1,174 @@
+/* ============================================
+   ESTILOS PARA VALIDADOR
+   Sistema de Carnet Digital - Universidad del Pacífico
+   ============================================
+   
+   DESCRIPCIÓN:
+   Estilos para la sección de validación de carnets,
+   incluyendo el escáner de códigos de barras y la
+   visualización de resultados.
+   
+   COMPONENTES:
+   - Contenedor del validador
+   - Métodos de escaneo
+   - Resultados de validación
+   - Botones de control
+   - Display de datos del estudiante
+   
+   RESPONSIVE:
+   - Adaptación para móviles
+   - Prevención de scroll horizontal
+   
+   ============================================ */
+
+.validator-container {
+  width: 100%;
+}
+
+/* Cuando está dentro del panel de administración */
+.admin-panel .validator-container {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 2px solid var(--gray-border);
+}
+
+/* ============================================
+   TÍTULOS Y SECCIONES
+   ============================================ */
+.validator-container h2,
+.validator-container h3 {
+  color: var(--accent-primary, #2596be);
+}
+
+.scan-section {
+  background: transparent;
+  border-radius: 12px;
+  padding: 0;
+  box-shadow: none;
+  margin-bottom: 16px;
+}
+
+/* ============================================
+   MÉTODOS DE ESCANEO
+   ============================================ */
+.scan-methods {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.scan-method {
+  border: 2px solid var(--gray-border);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: left;
+  transition: all 0.3s ease;
+  cursor: default;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 51, 102, 0.08);
+}
+
+.scan-method:hover {
+  border-color: var(--accent-primary, #2596be);
+  box-shadow: 0 4px 12px rgba(0, 51, 102, 0.12);
+  transform: translateY(-2px);
+}
+
+.scan-method.active {
+  border-color: var(--accent-primary, #2596be);
+  background: rgba(37, 150, 190, 0.05); /* Sin degradado */
+  box-shadow: 0 4px 16px rgba(0, 51, 102, 0.15);
+}
+
+.scan-method h4 {
+  color: var(--accent-primary, #2596be);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.scan-method p {
+  color: var(--text-medium);
+  line-height: 1.5;
+}
+
+/* Contenedor del escáner de código de barras */
+#barcode-reader {
+  width: 100%;
+  max-width: 500px;
+  margin: 16px auto;
+}
+
+/* ============================================
+   RESULTADOS DE VALIDACIÓN
+   ============================================ */
+.validation-result {
+  display: none;
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: 8px;
+  background: var(--gray-light);
+  border: 1px solid var(--gray-border);
+}
+
+.validation-result.active {
+  display: block;
+}
+
+.validation-result.valid {
+  border-left: 4px solid var(--udp-green);
+  background: rgba(55, 163, 114, 0.1); /* Sin degradado */
+  box-shadow: 0 2px 8px rgba(55, 163, 114, 0.15);
+}
+
+.validation-result.invalid {
+  border-left: 4px solid var(--udp-blue);
+  background: rgba(37, 150, 190, 0.1); /* Sin degradado */
+  box-shadow: 0 2px 8px rgba(37, 150, 190, 0.15);
+}
+
+.student-data-display {
+  display: none;
+  margin-top: 15px;
+  padding: 15px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid var(--gray-border);
+}
+
+.student-data-display.active {
+  display: block;
+}
+
+/* Botones de escaneo */
+
+.student-data-display p {
+  margin: 8px 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.student-data-display strong {
+  color: var(--accent-primary, #2596be);
+}
+
+.btn-scan {
+  width: 100%;
+  margin: 12px auto 0;
+  display: block;
+  text-align: center;
+}
+
+#stopScanBtn {
+  display: none;
+}
+
+#stopScanBtn.active {
+  display: inline-block;
+}
+
+@media (max-width: 720px) {
+  .scan-methods {
+    grid-template-columns: 1fr;
+  }
+}

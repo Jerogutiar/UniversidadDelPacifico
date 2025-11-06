@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<!--
+  ============================================
+  PÁGINA DE PERFIL DEL ESTUDIANTE
+  Sistema de Carnet Digital - Universidad del Pacífico
+  ============================================
+  
+  DESCRIPCIÓN:
+  Panel del estudiante donde puede visualizar su carnet
+  digital, cambiar su contraseña (en primer acceso) y
+  descargar el PDF del carnet.
+  
+  FUNCIONALIDADES:
+  - Visualización del carnet digital (frente y reverso)
+  - Cambio de contraseña (solo en primer acceso)
+  - Descarga del carnet en formato PDF
+  - Toggle de tema claro/oscuro
+  
+  ============================================
+-->
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Perfil del estudiante - Carnet Digital UDP" />
+  <link rel="icon" type="image/x-icon" href="../assets/images/favicon.ico" />
+  <title>Mi Carnet Digital | Universidad del Pacífico</title>
+  <link rel="stylesheet" href="../css/theme.css" />
+  <link rel="stylesheet" href="../css/admin.css" />
+  <link rel="stylesheet" href="../css/form.css" />
+  <link rel="stylesheet" href="../css/modal.css" />
+  <link rel="stylesheet" href="../css/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- Sidebar de navegación -->
+    <aside class="dashboard-sidebar" id="sidebar">
+      <div class="dashboard-sidebar-header">
+        <img src="../assets/images/udp.png" alt="UDP" class="dashboard-logo" />
+      </div>
+      <nav class="dashboard-sidebar-nav">
+        <div class="dashboard-nav-item active" data-section="card">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+            <path d="M3 9h18M9 21V9"></path>
+          </svg>
+          Mi Carnet
+        </div>
+        <div class="dashboard-nav-item" data-section="download" id="downloadNavBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Descargar PDF
+        </div>
+      </nav>
+      <div class="dashboard-sidebar-footer">
+        <button id="themeToggle" class="btn btn-secondary" style="width: 100%;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          Cambiar Tema
+        </button>
+        <button id="logoutBtn" class="btn btn-secondary" style="width: 100%; margin-top: 8px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+          Cerrar Sesión
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+      <header class="dashboard-header">
+        <h1 class="dashboard-header-title" id="pageTitle">Mi Carnet Digital</h1>
+        <button id="mobileMenuToggle" class="mobile-menu-toggle" style="display: none;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </header>
+
+      <!-- Content -->
+      <div class="dashboard-content">
+        <!-- Sección de cambio de contraseña -->
+        <section id="firstLoginSection" class="content-section" style="display: none; max-width: 600px; margin: 0 auto;">
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">Cambia tu contraseña</h2>
+              <p class="card-subtitle">Por seguridad, debes actualizar tu contraseña antes de continuar.</p>
+            </div>
+            <div class="card-body">
+              <form id="changePwdForm">
+                <div class="form-group">
+                  <label for="newPwd" class="form-label">Nueva contraseña</label>
+                  <input type="password" id="newPwd" class="form-input" required autocomplete="new-password" />
+                </div>
+                <div class="form-group">
+                  <label for="newPwd2" class="form-label">Confirmar contraseña</label>
+                  <input type="password" id="newPwd2" class="form-input" required autocomplete="new-password" />
+                </div>
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary btn-green">Guardar</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- Sección de visualización del carnet digital -->
+        <section id="cardSection" class="content-section active">
+          <div style="max-width: 1000px; margin: 0 auto; width: 100%;">
+            <div class="cards-container">
+                <article class="card-side front" id="cardFront" aria-label="Frente del carnet">
+                  <!-- Columna izquierda - Logo UDP -->
+                  <div class="carnet-left-column">
+                    <div class="carnet-logo-container">
+                      <img class="carnet-logo-img" src="../assets/images/udp.png" alt="Logo Universidad del Pacífico" loading="eager" />
+                    </div>
+                  </div>
+                  
+                  <!-- Columna derecha - Contenido -->
+                  <div class="carnet-right-column">
+                    <!-- Header superior -->
+                    <div class="carnet-top-header">
+                      <h1 class="carnet-title-main">Universidad del Pacífico</h1>
+                      <p class="carnet-subtitle-main">Carné de Estudiante Regular</p>
+                      <p class="carnet-legal-text">Ley 65 de 1988 - Código ICFES 112-96</p>
+                    </div>
+                    
+                    <!-- Contenido principal -->
+                    <div class="carnet-main-content">
+                      <!-- Información del estudiante -->
+                      <div class="carnet-student-data">
+                        <div class="student-info-row">
+                          <div class="student-name" id="displayName"></div>
+                          <div class="student-lastname" id="displayCed"></div>
+                          <div class="student-cedula" id="displayCedula"></div>
+                        </div>
+                        
+                        <div class="student-info-row">
+                          <div class="student-program" id="displayProgram"></div>
+                        </div>
+                        
+                        <div class="student-code-row">
+                          <div class="student-code-label">Código de Estudiante</div>
+                          <div class="student-code-value" id="displayCode"></div>
+                        </div>
+                        
+                        <div class="student-sede-row">
+                          <strong>Sede:</strong> <span id="sedeFront"></span>
+                        </div>
+                      </div>
+                      
+                      <!-- Foto del estudiante -->
+                      <div class="carnet-photo-column">
+                        <figure class="photo-frame" id="photoFrame">
+                          <img id="profileImage" src="" alt="Foto del estudiante" loading="lazy" />
+                        </figure>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+                <article class="card-side back" id="cardBack" aria-label="Reverso del carnet">
+                  <!-- Header superior con verde institucional -->
+                  <div class="back-top-header">
+                    <div class="back-header-content">
+                      <h2 class="back-title">Instrucciones</h2>
+                      <div class="back-header-line"></div>
+                    </div>
+                  </div>
+                  
+                  <div class="back-grid">
+                    <div class="rules-col">
+                      <p class="instructions-text"><strong>Este carnet es personal e intransferible.</strong></p>
+                      
+                      <div class="barcode-col">
+                        <div class="barcode-container">
+                          <div class="barcode-svg" id="barcode"></div>
+                          <div class="student-code-display-back" id="barcodeText"></div>
+                        </div>
+                      </div>
+                      
+                      <div class="expiry-container">
+                        <p class="expiry-label">Válido hasta:</p>
+                        <div class="expiry-date" id="expiryDate"></div>
+                      </div>
+                      
+                      <div class="divider-line"></div>
+                      
+                      <div class="institutional-info">
+                        <p class="institutional-name"><strong>Universidad del Pacífico</strong></p>
+                        <p class="institutional-address">Kilómetro 13 vía al Aeropuerto, Barrio El Triunfo, Campus Universitario, Buenaventura</p>
+                        <p class="institutional-contact">
+                          <span>Tel: +57 (602) 240 5555</span>
+                          <span>·</span>
+                          <span>Email: info@unipacifico.edu.co</span>
+                          <span>·</span>
+                          <span>Web: unipacifico.edu.co</span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              </div>
+            </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/modal.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/card.js"></script>
+  <script src="../js/student.js"></script>
+</body>
+</html>

@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<!--
+  ============================================
+  PANEL DE ADMINISTRACIÓN (STAFF)
+  Sistema de Carnet Digital - Universidad del Pacífico
+  ============================================
+  
+  DESCRIPCIÓN:
+  Permite a los funcionarios autorizados gestionar:
+  - Creación y edición de estudiantes y carnets
+  - Lista y búsqueda de estudiantes
+  - Restablecimiento de contraseñas
+  - Gestión de funcionarios
+  - Validación de carnets mediante código de barras
+  - Exportación de datos
+  
+  FUNCIONALIDADES:
+  - Dashboard con estadísticas
+  - Administración de estudiantes (crear/editar)
+  - Lista de estudiantes con filtros avanzados
+  - Gestión de contraseñas
+  - Validación de carnets con escáner
+  - Gestión de funcionarios
+  
+  ============================================
+-->
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Panel de funcionario - Carnet Digital UDP" />
+  <link rel="icon" type="image/x-icon" href="../assets/images/favicon.ico" />
+  <title>Panel Funcionario | Carnet Digital</title>
+  <link rel="stylesheet" href="../css/theme.css" />
+  <link rel="stylesheet" href="../css/form.css" />
+  <link rel="stylesheet" href="../css/admin.css" />
+  <link rel="stylesheet" href="../css/validator.css" />
+  <link rel="stylesheet" href="../css/modal.css" />
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar" id="sidebar">
+      <div class="dashboard-sidebar-header">
+        <img src="../assets/images/udp.png" alt="UDP" class="dashboard-logo" />
+      </div>
+      <nav class="dashboard-sidebar-nav">
+        <a href="#dashboard" class="dashboard-nav-item active" data-section="dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+          Dashboard
+        </a>
+        <a href="#students-create" class="dashboard-nav-item" data-section="students-create">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 20h9"></path>
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+          </svg>
+          Administrar Estudiante
+        </a>
+        <a href="#students-list" class="dashboard-nav-item" data-section="students-list">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          Lista Estudiantes
+        </a>
+        <a href="#students-passwords" class="dashboard-nav-item" data-section="students-passwords">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          Contraseñas
+        </a>
+        <a href="#staff" class="dashboard-nav-item" data-section="staff">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          Funcionarios
+        </a>
+        <a href="#validator" class="dashboard-nav-item" data-section="validator">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 12l2 2 4-4"></path>
+            <path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"></path>
+            <path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"></path>
+            <path d="M3 12h18"></path>
+          </svg>
+          Validar Carnet
+        </a>
+        <a href="#export" class="dashboard-nav-item" data-section="export">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Exportar Datos
+        </a>
+      </nav>
+      <div class="dashboard-sidebar-footer">
+        <button id="themeToggle" class="btn btn-secondary" style="width: 100%;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          Cambiar Tema
+        </button>
+        <button id="logoutBtn" class="btn btn-secondary" style="width: 100%; margin-top: 8px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+          Cerrar Sesión
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+      <header class="dashboard-header">
+        <h1 class="dashboard-header-title" id="pageTitle">Dashboard</h1>
+        <button id="mobileMenuToggle" class="mobile-menu-toggle" style="display: none;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </header>
+
+      <!-- Content -->
+      <div class="dashboard-content">
+        <!-- Dashboard Section -->
+        <section id="dashboard-section" class="content-section active">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="card">
+              <div class="card-body">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="text-tertiary mb-1">Total Estudiantes</p>
+                    <h2 class="text-2xl font-bold" id="statTotalStudents">0</h2>
+                  </div>
+                  <div style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="text-tertiary mb-1">Carnets Activos</p>
+                    <h2 class="text-2xl font-bold" id="statActiveCards">0</h2>
+                  </div>
+                  <div style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2">
+                      <path d="M9 12l2 2 4-4"></path>
+                      <circle cx="12" cy="12" r="10"></circle>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="text-tertiary mb-1">Por Vencer</p>
+                    <h2 class="text-2xl font-bold" id="statExpiring">0</h2>
+                  </div>
+                  <div style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2">
+                      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                      <line x1="12" y1="9" x2="12" y2="13"></line>
+                      <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-body">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="text-tertiary mb-1">Funcionarios</p>
+                    <h2 class="text-2xl font-bold" id="statStaff">0</h2>
+                  </div>
+                  <div style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2">
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="9" cy="7" r="4"></circle>
+                      <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                      <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Students Create Section -->
+        <section id="students-create-section" class="content-section">
+          <div class="card" style="max-width: 900px; margin: 0 auto;">
+            <div class="card-header">
+              <h2 class="card-title">Administrar Estudiante</h2>
+              <p class="card-subtitle">Al crear un carnet se genera un usuario con contraseña por defecto (cédula)</p>
+            </div>
+            <div class="card-body">
+              <form id="studentForm" class="student-form">
+                    <div class="form-row two-cols">
+                      <div class="form-group">
+                        <label for="studentName" class="form-label">Nombre *</label>
+                        <input type="text" id="studentName" class="form-input" required />
+                      </div>
+                      <div class="form-group">
+                        <label for="studentLastname" class="form-label">Apellidos *</label>
+                        <input type="text" id="studentLastname" class="form-input" required />
+                      </div>
+                    </div>
+                    <div class="form-row two-cols">
+                      <div class="form-group">
+                        <label for="studentCode" class="form-label">Código de Estudiante *</label>
+                        <input type="text" id="studentCode" class="form-input" required />
+                      </div>
+                      <div class="form-group">
+                        <label for="studentCedula" class="form-label">Cédula *</label>
+                        <input type="text" id="studentCedula" class="form-input" required />
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label for="studentProgram" class="form-label">Programa Académico *</label>
+                        <input type="text" id="studentProgram" class="form-input" required />
+                      </div>
+                    </div>
+                    <div class="form-row two-cols">
+                      <div class="form-group">
+                        <label for="studentExpiry" class="form-label">Fecha de Expiración *</label>
+                        <input type="date" id="studentExpiry" class="form-input" required />
+                      </div>
+                      <div class="form-row two-cols">
+                        <div class="form-group">
+                          <label for="studentSede" class="form-label">Sede *</label>
+                          <select id="studentSede" class="form-select" required>
+                            <option value="Buenaventura" selected>Buenaventura</option>
+                          </select>
+                        </div>
+                        <div class="form-group">
+                          <label for="studentRH" class="form-label">RH</label>
+                          <select id="studentRH" class="form-select">
+                            <option value="">Seleccionar...</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="studentPhoto" class="form-label">Foto del Estudiante</label>
+                      <div class="file-input-wrapper">
+                        <input type="file" id="studentPhoto" accept="image/*" class="file-input-custom" />
+                        <label for="studentPhoto" class="file-input-label">
+                          <span class="file-input-text" id="fileInputText">Seleccionar foto</span>
+                          <span class="file-input-button">Examinar</span>
+                        </label>
+                      </div>
+                      <div id="photoPreview" class="photo-preview">
+                        <img id="previewImage" src="" alt="Vista previa" />
+                        <button type="button" id="removePhoto" class="btn btn-danger btn-sm mt-2">Eliminar foto</button>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Estado de carnet</label>
+                      <div class="carnet-status-wrapper">
+                        <label class="carnet-status-option">
+                          <input type="radio" name="carnetStatus" id="studentActive" value="active" checked />
+                          <span class="carnet-status-label-text">Activo</span>
+                        </label>
+                        <label class="carnet-status-option">
+                          <input type="radio" name="carnetStatus" id="studentInactive" value="inactive" />
+                          <span class="carnet-status-label-text">Inactivo</span>
+                        </label>
+                      </div>
+                    </div>
+                    <div class="form-actions">
+                      <button type="submit" class="btn btn-primary btn-green">Guardar Carnet</button>
+                      <button type="button" id="clearFormBtn" class="btn btn-secondary">Limpiar</button>
+                    </div>
+                  </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- Students List Section -->
+        <section id="students-list-section" class="content-section">
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">Lista de Estudiantes</h2>
+              <p class="card-subtitle" id="studentCount">0 estudiantes</p>
+            </div>
+            <div class="card-body">
+              <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-4">
+                <div class="lg:col-span-2">
+                  <input type="text" id="searchInput" class="form-input" placeholder="Buscar por código, cédula o nombre..." />
+                </div>
+                <div>
+                  <select id="filterProgram" class="form-select">
+                    <option value="">Todos los programas</option>
+                  </select>
+                </div>
+                <div>
+                  <select id="filterSede" class="form-select">
+                    <option value="">Todas las sedes</option>
+                  </select>
+                </div>
+              </div>
+              <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-4">
+                <div>
+                  <select id="filterStatus" class="form-select">
+                    <option value="">Todos</option>
+                    <option value="active">Activos</option>
+                    <option value="expired">Expirados</option>
+                    <option value="expiring">Por vencer</option>
+                  </select>
+                </div>
+                <div>
+                  <button class="btn btn-secondary btn-sm" id="clearFiltersBtn" style="width: 100%;">Limpiar filtros</button>
+                </div>
+              </div>
+              <div class="student-list" id="studentList" style="max-height: 600px; overflow-y: auto;"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Students Passwords Section -->
+        <section id="students-passwords-section" class="content-section">
+          <div class="card" style="max-width: 600px; margin: 0 auto;">
+            <div class="card-header">
+              <h2 class="card-title">Restablecer Contraseña de Estudiante</h2>
+              <p class="card-subtitle">Restablece la contraseña de un estudiante</p>
+            </div>
+            <div class="card-body">
+              <form id="resetStudentPasswordForm">
+                <div class="form-group">
+                  <label for="resetCode" class="form-label">Código estudiante</label>
+                  <input type="text" id="resetCode" class="form-input" placeholder="Código" required />
+                </div>
+                <div class="form-group">
+                  <label for="resetPwd" class="form-label">Nueva contraseña</label>
+                  <input type="password" id="resetPwd" class="form-input" placeholder="Nueva contraseña" required />
+                </div>
+                <div class="form-actions">
+                  <button type="button" class="btn btn-primary btn-green" id="resetBtn">Restablecer contraseña</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- Validator Section -->
+        <section id="validator-section" class="content-section">
+          <div class="card" style="max-width: 800px; margin: 0 auto;">
+            <div class="card-header">
+              <h2 class="card-title">Validar Carnet</h2>
+              <p class="card-subtitle">Escanear código de barras del carnet para validar</p>
+            </div>
+            <div class="card-body">
+              <div id="barcode-scanner" class="validator-container">
+                <div id="barcode-reader"></div>
+                <div class="flex gap-2 mt-4">
+                  <button class="btn btn-primary btn-green" id="startScanBtn">Iniciar Escáner</button>
+                  <button class="btn btn-secondary" id="stopScanBtn" style="display: none;">Detener Escáner</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Staff Section -->
+        <section id="staff-section" class="content-section">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Formulario de registro de funcionario -->
+            <div class="card">
+              <div class="card-header">
+                <h2 class="card-title">Crear Funcionario</h2>
+                <p class="card-subtitle">Registrar nuevo funcionario autorizado</p>
+              </div>
+              <div class="card-body">
+                <form id="staffRegisterForm">
+                  <div class="form-group">
+                    <label for="staffName" class="form-label">Nombre completo *</label>
+                    <input type="text" id="staffName" class="form-input" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="staffEmail" class="form-label">Email institucional *</label>
+                    <input type="email" id="staffEmail" class="form-input" required placeholder="usuario@udp.edu" />
+                  </div>
+                  <div class="form-group">
+                    <label for="staffPassword" class="form-label">Contraseña *</label>
+                    <input type="password" id="staffPassword" class="form-input" required />
+                  </div>
+                        <div class="form-actions">
+                          <button type="submit" class="btn btn-primary btn-green">Registrar Funcionario</button>
+                        </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- Lista de funcionarios registrados -->
+            <div class="card">
+              <div class="card-header">
+                <h2 class="card-title">Funcionarios Registrados</h2>
+                <p class="card-subtitle" id="staffCount">0 funcionarios</p>
+              </div>
+              <div class="card-body">
+                <div class="form-group mb-3">
+                  <input type="text" id="searchStaffInput" class="form-input" placeholder="Buscar funcionario..." />
+                </div>
+                <div class="staff-list" id="staffList" style="max-height: 400px; overflow-y: auto;"></div>
+              </div>
+            </div>
+
+            <!-- Formulario de restablecimiento de contraseña de funcionario -->
+            <div class="card lg:col-span-2">
+              <div class="card-header">
+                <h2 class="card-title">Restablecer Contraseña de Funcionario</h2>
+              </div>
+              <div class="card-body">
+                <div class="form-row two-cols">
+                  <div class="form-group">
+                    <label for="resetStaffEmail" class="form-label">Email funcionario</label>
+                    <input type="email" id="resetStaffEmail" class="form-input" placeholder="usuario@udp.edu" />
+                  </div>
+                  <div class="form-group">
+                    <label for="resetStaffPwd" class="form-label">Nueva contraseña</label>
+                    <input type="password" id="resetStaffPwd" class="form-input" placeholder="Nueva contraseña" />
+                  </div>
+                </div>
+                <button class="btn btn-primary btn-green" id="resetStaffBtn">Restablecer contraseña funcionario</button>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- Export Section -->
+        <section id="export-section" class="content-section">
+          <div class="card" style="max-width: 800px; margin: 0 auto;">
+            <div class="card-header">
+              <h2 class="card-title">Exportar Datos</h2>
+              <p class="card-subtitle">Descargar información en diferentes formatos</p>
+            </div>
+            <div class="card-body">
+              <div class="form-row two-cols">
+                <div class="form-group">
+                  <label for="exportType" class="form-label">Tipo de exportación</label>
+                  <select id="exportType" class="form-select">
+                    <option value="students-json">Estudiantes (JSON)</option>
+                    <option value="students-csv">Estudiantes (CSV)</option>
+                    <option value="staff-json">Funcionarios (JSON)</option>
+                    <option value="staff-csv">Funcionarios (CSV)</option>
+                  </select>
+                </div>
+                <div class="form-group" style="display: flex; align-items: flex-end;">
+                  <button class="btn btn-primary btn-green" id="exportDownloadBtn" style="width: 100%;">Descargar</button>
+                </div>
+              </div>
+              <small class="form-help">Las fotos se incluyen en las descargas (JSON incluye base64, CSV referencia)</small>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/modal.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/card.js"></script>
+  <script src="../js/staff.js"></script>
+</body>
+</html>

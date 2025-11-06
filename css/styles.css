@@ -1,0 +1,1013 @@
+/* ============================================
+   CARNET DIGITAL - ESTILOS PROFESIONALES
+   Universidad del Pacífico
+   ============================================
+   
+   DESCRIPCIÓN:
+   Estilos principales para el diseño del carnet digital,
+   incluyendo el frente y reverso del carnet, diseño
+   responsive, y estilos de tarjetas.
+   
+   COMPONENTES:
+   - Frente del carnet (con foto, datos del estudiante)
+   - Reverso del carnet (código de barras, información)
+   - Contenedores y layouts
+   - Botones y controles
+   - Estilos responsive
+   
+   NOTAS:
+   - El carnet siempre mantiene fondo blanco (#ffffff)
+   - No se afecta por el tema oscuro/claro
+   - Colores institucionales: azul #2596be y verde #37a372
+   
+   ============================================ */
+
+/* Importar fuente profesional */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+/* ============================================
+   VARIABLES CSS - COLORES INSTITUCIONALES
+   ============================================ */
+:root {
+  /* Dimensiones del carnet */
+  --card-width: 600px;
+  --card-height: 380px;
+  --radius: 16px;
+  
+  /* Colores institucionales Universidad del Pacífico
+     Azul principal: #2596be, Verde principal: #37a372 */
+  --primary-blue: #2596be;
+  --secondary-blue: #4db8d4;
+  --accent-blue: #2596be;
+  --primary-green: #37a372;
+  --secondary-green: #5bb889;
+  --light-green: #e8f5e9;
+  --logo-yellow: #f4c430;
+  --logo-dark-blue: #2596be;
+  --logo-green: #37a372;
+  
+  --white: #ffffff;
+  --text-dark: var(--text-primary, #1e293b);
+  --text-medium: var(--text-secondary, #475569);
+  --text-light: var(--text-tertiary, #64748b);
+  --gray-light: var(--bg-tertiary, #f1f5f9);
+  --gray-border: var(--border-color, #e2e8f0);
+  
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
+  
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+}
+
+/* ============================================
+   RESET Y ESTILOS BASE
+   ============================================ */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Estilos del dashboard header */
+.dashboard-header {
+  background: var(--bg-secondary) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  padding: 24px 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100 !important;
+  box-shadow: var(--shadow-sm) !important;
+  min-height: 72px !important;
+  gap: 16px !important;
+}
+
+.dashboard-header-title {
+  font-size: 1.75rem !important;
+  font-weight: 700 !important;
+  color: var(--text-primary) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1.2 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+.dashboard-header-title::before {
+  content: '' !important;
+  width: 4px !important;
+  height: 32px !important;
+  background: var(--udp-blue) !important;
+  border-left: 2px solid var(--udp-green) !important;
+  border-radius: 2px !important;
+  display: block !important;
+  flex-shrink: 0 !important;
+}
+
+/* ============================================
+   SISTEMA DE CENTRADO
+   ============================================ */
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary);
+  padding: 30px 20px;
+  font-family: var(--font-family);
+  position: relative;
+  box-sizing: border-box;
+}
+
+/* Para páginas con dashboard-container, no centrar verticalmente */
+body:has(.dashboard-container),
+body:has(.admin-container) {
+  align-items: flex-start;
+  padding: 0;
+  display: block;
+  min-height: 100vh;
+}
+
+/* ============================================
+   CONTENEDOR PRINCIPAL - CENTRADO PERFECTO
+   ============================================ */
+main.container,
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+
+/* ============================================
+   VISTA DE CARNETS LADO A LADO
+   ============================================ */
+
+.cards-container {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+.card-side {
+  width: var(--card-width);
+  height: var(--card-height);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  filter: drop-shadow(0 8px 24px rgba(0, 51, 102, 0.15));
+  position: relative;
+  background: #ffffff !important; /* Siempre blanco, no afectado por tema oscuro */
+  color: #1e293b !important;
+}
+
+.side {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: stretch;
+  background: #ffffff !important; /* Siempre blanco, no afectado por tema oscuro */
+}
+
+/* ============================================
+   FRENTE DEL CARNET - REDISEÑO COMPLETO
+   ============================================ */
+
+.front {
+  background: #ffffff;
+  color: #1e293b;
+  display: flex;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+}
+
+/* Columna izquierda - Logo UDP */
+.carnet-left-column {
+  width: 200px;
+  min-width: 200px;
+  background: linear-gradient(180deg, var(--primary-blue) 0%, var(--primary-blue) 50%, var(--primary-green) 50%, var(--primary-green) 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  position: relative;
+}
+
+.carnet-logo-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.carnet-logo-img {
+  width: 100%;
+  max-width: 160px;
+  height: auto;
+  object-fit: contain;
+  /* Logo en color original sobre fondo de colores institucionales */
+}
+
+/* Columna derecha - Contenido principal */
+.carnet-right-column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  position: relative;
+}
+
+/* Header superior con fondo azul */
+.carnet-top-header {
+  background: var(--primary-blue);
+  padding: 20px 28px;
+  color: #ffffff;
+  position: relative;
+}
+
+.carnet-top-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: var(--primary-green);
+}
+
+.carnet-title-main {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  line-height: 1.2;
+  margin-bottom: 6px;
+}
+
+.carnet-subtitle-main {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #ffffff;
+  opacity: 0.95;
+  letter-spacing: 0.5px;
+}
+
+.carnet-legal-text {
+  margin: 6px 0 0 0;
+  font-size: 0.7rem;
+  color: #ffffff;
+  opacity: 0.9;
+}
+
+/* Contenido principal - Información del estudiante */
+.carnet-main-content {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 160px;
+  padding: 0;
+}
+
+.carnet-student-data {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+}
+
+.student-info-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.student-name {
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--primary-blue);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.student-lastname {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #1e293b;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.student-cedula {
+  font-size: 0.9rem;
+  color: #64748b;
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+.student-program {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--primary-green);
+  margin-top: 8px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+
+.student-code-row {
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 2px solid #e2e8f0;
+}
+
+.student-code-label {
+  font-size: 0.8rem;
+  color: #64748b;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.student-code-value {
+  font-size: 1rem;
+  color: var(--primary-blue);
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.student-sede-row {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.student-sede-row strong {
+  color: #1e293b;
+  font-weight: 600;
+}
+
+/* Columna de foto */
+.carnet-photo-column {
+  width: 160px;
+  min-width: 160px;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 16px;
+  border-left: 1px solid #e2e8f0;
+}
+
+.photo-frame {
+  width: 130px;
+  height: 160px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 4px solid var(--primary-blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  position: relative;
+}
+
+.photo-frame::before {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: -4px;
+  right: -4px;
+  height: 6px;
+  background: var(--primary-green);
+  z-index: 1;
+}
+
+.photo-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: relative;
+  z-index: 0;
+}
+
+.photo-upload-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.file-input {
+  font-size: 0.75rem;
+  padding: 6px 10px;
+  border: 1px solid var(--gray-border);
+  border-radius: 6px;
+  background: var(--white);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%;
+  max-width: 200px;
+}
+
+.file-input:hover {
+  border-color: var(--accent-blue);
+  background: var(--gray-light);
+}
+
+.file-input::file-selector-button {
+  padding: 4px 8px;
+  margin-right: 8px;
+  border: none;
+  border-radius: 4px;
+  background: var(--accent-blue);
+  color: white;
+  font-size: 0.7rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.photo-upload-container small {
+  font-size: 0.68rem;
+  color: var(--text-light);
+  text-align: center;
+}
+
+.info-lines {
+  margin-top: 8px;
+  text-align: center;
+  font-size: 0.86rem;
+  padding-top: 8px;
+  border-top: 1px solid var(--gray-border);
+  width: 100%;
+}
+
+.info-lines .info-name {
+  font-weight: 700;
+  color: var(--text-dark);
+  font-size: 0.88rem;
+  margin-bottom: 3px;
+  letter-spacing: 0.3px;
+}
+
+.info-lines .info-program {
+  font-size: 0.78rem;
+  color: var(--text-medium);
+}
+
+/* ============================================
+   REVERSO DEL CARNET - DISEÑO PROFESIONAL
+   ============================================ */
+
+.back {
+  background: #ffffff !important;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  gap: 0;
+  align-items: stretch;
+  border: 1px solid rgba(0, 51, 102, 0.1);
+  position: relative;
+  overflow: hidden;
+  color: #1e293b !important;
+}
+
+.back::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('../assets/images/favicon.ico') center center no-repeat;
+  background-size: 100px 100px;
+  opacity: 0.05;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Header superior con verde institucional */
+.back-top-header {
+  background: var(--primary-green);
+  padding: 20px 24px;
+  color: #ffffff;
+  position: relative;
+  z-index: 2;
+}
+
+.back-header-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.back-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.back-header-line {
+  height: 4px;
+  width: 60px;
+  background: var(--primary-blue);
+  border-radius: 2px;
+}
+
+.back-grid {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 16px;
+  padding: 24px;
+  align-items: flex-start;
+  flex: 1;
+  position: relative;
+  z-index: 1;
+  color: #1e293b !important;
+  background: transparent !important;
+}
+
+.rules-col {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-size: 0.85rem;
+  position: relative;
+  z-index: 1;
+  color: #1e293b !important;
+  line-height: 1.6;
+  background: transparent !important;
+}
+
+.instructions-text {
+  margin: 0;
+  text-align: left;
+  color: #1e293b !important;
+  font-size: 0.9rem;
+  padding: 12px 16px;
+  background: rgba(55, 163, 114, 0.08);
+  border-radius: 8px;
+  border-left: 4px solid var(--primary-green);
+}
+
+.instructions-text strong {
+  color: var(--primary-green) !important;
+  font-weight: 600;
+}
+
+.barcode-col {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 0;
+  position: relative;
+  z-index: 1;
+  background: transparent !important;
+}
+
+.barcode-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 320px;
+}
+
+.barcode-svg {
+  width: 100%;
+  max-width: 320px;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff !important;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 2px solid var(--primary-green);
+  position: relative;
+  z-index: 1;
+}
+
+.barcode-svg svg {
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  min-height: 70px;
+}
+
+.student-code-display-back {
+  font-size: 0.9rem;
+  color: var(--primary-blue);
+  font-weight: 600;
+  letter-spacing: 1px;
+  padding: 8px 16px;
+  background: rgba(37, 150, 190, 0.08);
+  border-radius: 6px;
+  border: 1px solid rgba(37, 150, 190, 0.2);
+}
+
+.expiry-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.expiry-label {
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: var(--primary-green);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.expiry-date {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1e293b;
+  padding: 10px 16px;
+  background: rgba(55, 163, 114, 0.1);
+  border-radius: 8px;
+  border: 2px solid var(--primary-green);
+  display: inline-block;
+  width: fit-content;
+}
+
+.divider-line {
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(to right, var(--primary-green) 0%, var(--primary-blue) 100%);
+  margin: 12px 0;
+  border-radius: 1px;
+}
+
+.institutional-info {
+  font-size: 0.85rem;
+  color: #64748b !important;
+  line-height: 1.6;
+  margin-top: 8px;
+}
+
+.institutional-name {
+  margin: 0 0 8px 0 !important;
+  font-size: 0.95rem;
+  color: var(--primary-blue) !important;
+  font-weight: 700;
+}
+
+.institutional-address {
+  margin: 0 0 6px 0 !important;
+  color: #64748b !important;
+  line-height: 1.5;
+}
+
+.institutional-contact {
+  margin: 0 !important;
+  color: #64748b !important;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  font-size: 0.8rem;
+}
+
+.institutional-contact span {
+  color: #64748b !important;
+}
+
+/* ============================================
+   CONTROLES - DISEÑO PROFESIONAL
+   ============================================ */
+
+.controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 12px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+/* ============================================
+   BOTONES GENERALES
+   Azul institucional por defecto, verde en hover
+   ============================================ */
+.btn {
+  background: var(--udp-blue) !important;
+  color: white !important;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  box-shadow: var(--shadow-md);
+  transition: all 0.2s ease;
+  letter-spacing: 0.3px;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn:hover,
+.btn:focus,
+.btn:active {
+  background: var(--udp-green) !important;
+  color: white !important;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn:active {
+  transform: translateY(-1px) translateZ(0);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn.secondary {
+  background: var(--udp-blue) !important;
+  color: white !important;
+  border: 2px solid var(--udp-blue) !important;
+}
+
+.btn.secondary:hover,
+.btn.secondary:focus,
+.btn.secondary:active {
+  background: var(--udp-green) !important;
+  border-color: var(--udp-green) !important;
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(55, 163, 114, 0.3);
+}
+
+/* ============================================
+   MENSAJES Y NOTAS
+   ============================================ */
+
+.note {
+  font-size: 0.82rem;
+  color: var(--text-medium);
+  margin-top: 8px;
+  text-align: center;
+  max-width: 800px;
+  line-height: 1.6;
+  padding: 12px;
+  background: var(--white);
+  border-radius: 8px;
+  border: 1px solid var(--gray-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.note code {
+  background: var(--gray-light);
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-size: 0.85em;
+  color: var(--primary-blue);
+  font-weight: 600;
+  border: 1px solid var(--gray-border);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+/* ============================================
+   RESPONSIVE - DISPOSITIVOS MÓVILES
+   Ajustes para pantallas pequeñas
+   ============================================ */
+@media (max-width: 720px) {
+  :root {
+    --card-width: 100%;
+    --card-height: 320px;
+  }
+
+  .cards-container {
+    flex-direction: column;
+    gap: 15px;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+  }
+
+  body {
+    padding: 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+  
+  body:has(.dashboard-container) {
+    padding: 0;
+    align-items: flex-start;
+    display: block;
+  }
+  
+  .container {
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  .form-section {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+
+  /* Ajustes para el dashboard en móvil */
+  .dashboard-main {
+    margin-left: 0 !important;
+    width: 100%;
+    max-width: 100vw;
+    padding: 0;
+  }
+
+  .dashboard-content {
+    padding: 16px;
+  }
+
+  .card-side {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    min-height: 380px;
+  }
+
+  .flip-card {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .front-main {
+    gap: 10px;
+    padding: 8px;
+  }
+
+  .logo-col {
+    width: 20%;
+  }
+
+  .unilogo {
+    width: 60px;
+    height: 60px;
+  }
+
+  .title-col {
+    width: 45%;
+  }
+
+  .title-col h1 {
+    font-size: 1rem;
+  }
+
+  .photo-col {
+    width: 35%;
+  }
+
+  .photo-frame {
+    width: 110px;
+    height: 130px;
+  }
+
+  .controls {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .btn {
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .back-grid {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .barcode-col,
+  .rules-col {
+    width: 100%;
+  }
+  
+  /* Configuración para evitar scroll horizontal */
+  * {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+/* ============================================
+   ESTADOS DE CARGA Y ERROR
+   ============================================ */
+
+.loading {
+  opacity: 0.7;
+  pointer-events: none;
+  filter: blur(1px);
+}
+
+.error-message {
+  background: #fff5f5;
+  border: 2px solid #fc8181;
+  color: #c53030;
+  padding: 14px 18px;
+  border-radius: 10px;
+  margin: 12px 0;
+  font-size: 0.9rem;
+  box-shadow: var(--shadow-sm);
+  font-weight: 500;
+}
+
+.success-message {
+  background: #f0fff4;
+  border: 2px solid #68d391;
+  color: #22543d;
+  padding: 14px 18px;
+  border-radius: 10px;
+  margin: 12px 0;
+  font-size: 0.9rem;
+  box-shadow: var(--shadow-sm);
+  font-weight: 500;
+}
+
+/* ============================================
+   ANIMACIONES Y EFECTOS
+   ============================================ */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.flip-card {
+  animation: fadeIn 0.6s ease-out;
+}
+
+/* Mejoras de accesibilidad */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

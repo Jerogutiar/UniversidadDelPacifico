@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<!--
+  ============================================
+  PÁGINA DE INICIO DE SESIÓN
+  Sistema de Carnet Digital - Universidad del Pacífico
+  ============================================
+  
+  DESCRIPCIÓN:
+  Página de login principal donde estudiantes y funcionarios
+  pueden iniciar sesión en el sistema.
+  
+  FUNCIONALIDADES:
+  - Login para estudiantes (código de estudiante + contraseña)
+  - Login para funcionarios (email + contraseña)
+  - Selector de rol (Estudiante/Funcionario)
+  - Toggle de tema claro/oscuro
+  - Validación de credenciales
+  
+  FUNCIONAMIENTO:
+  - Primer acceso: estudiantes usan su cédula como contraseña
+  - Validación de credenciales contra Supabase
+  - Redirección automática según el rol del usuario
+  
+  ============================================
+-->
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Acceso - Carnet Digital Universidad del Pacífico" />
+  <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico" />
+  <title>Acceso | Carnet Digital</title>
+  <link rel="stylesheet" href="css/theme.css" />
+  <link rel="stylesheet" href="css/form.css" />
+  <link rel="stylesheet" href="css/modal.css" />
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-card">
+      <!-- Header con logo -->
+      <div class="login-header">
+        <img src="assets/images/udp.png" alt="Universidad del Pacífico" class="login-logo" />
+      </div>
+
+      <!-- Selector de rol -->
+      <div class="role-selector">
+        <button type="button" id="tabStudent" class="role-tab active" role="tab" aria-selected="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          Estudiante
+        </button>
+        <button type="button" id="tabStaff" class="role-tab" role="tab" aria-selected="false">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          Funcionario
+        </button>
+      </div>
+
+      <!-- Formulario de login -->
+      <form id="loginForm" class="login-form">
+        <div class="form-group">
+          <label for="loginId" id="loginIdLabel" class="form-label">Código de Estudiante</label>
+          <input 
+            type="text" 
+            id="loginId" 
+            class="form-input"
+            required 
+            placeholder="Ej: 12300298" 
+            autocomplete="username"
+          />
+          <small class="form-help" id="loginIdHelp">Usa tu código asignado en el carnet</small>
+        </div>
+
+        <div class="form-group">
+          <label for="loginPassword" class="form-label">Contraseña</label>
+          <div class="password-input-wrapper">
+            <input 
+              type="password" 
+              id="loginPassword" 
+              class="form-input"
+              required 
+              placeholder="Tu contraseña" 
+              autocomplete="current-password" 
+            />
+          </div>
+          <small class="form-help" id="loginPwdHelp">
+            Primer acceso: tu contraseña es tu cédula. Si la olvidas, contacta a un funcionario.
+          </small>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" style="width: 100%;">
+            Ingresar
+          </button>
+        </div>
+      </form>
+
+      <!-- Theme toggle -->
+      <div class="login-footer">
+        <button type="button" id="themeToggle" class="theme-toggle" aria-label="Cambiar tema">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/api.js"></script>
+  <script src="js/modal.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/login.js"></script>
+</body>
+</html>
