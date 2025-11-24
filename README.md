@@ -73,9 +73,33 @@ CREATE INDEX IF NOT EXISTS idx_students_code ON students(code);
 CREATE INDEX IF NOT EXISTS idx_students_active ON students(active);
 CREATE INDEX IF NOT EXISTS idx_staff_email ON staff(email);
 
+-- Tabla de Préstamos (Biblioteca y Laboratorio)
+CREATE TABLE IF NOT EXISTS loans (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  student_code TEXT NOT NULL,
+  student_name TEXT NOT NULL,
+  category TEXT NOT NULL CHECK (category IN ('biblioteca', 'laboratorio')),
+  item_type TEXT NOT NULL,
+  item_description TEXT,
+  staff_email TEXT NOT NULL,
+  staff_name TEXT NOT NULL,
+  borrowed_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  returned_at TIMESTAMPTZ,
+  status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'returned')),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  FOREIGN KEY (student_code) REFERENCES students(code) ON DELETE CASCADE
+);
+
+-- Índices para préstamos
+CREATE INDEX IF NOT EXISTS idx_loans_student_code ON loans(student_code);
+CREATE INDEX IF NOT EXISTS idx_loans_status ON loans(status);
+CREATE INDEX IF NOT EXISTS idx_loans_category ON loans(category);
+CREATE INDEX IF NOT EXISTS idx_loans_borrowed_at ON loans(borrowed_at DESC);
+
 -- Políticas de Seguridad (RLS)
 ALTER TABLE students ENABLE ROW LEVEL SECURITY;
 ALTER TABLE staff ENABLE ROW LEVEL SECURITY;
+ALTER TABLE loans ENABLE ROW LEVEL SECURITY;
 
 -- Política: Todos pueden leer estudiantes (para validación pública)
 CREATE POLICY "Estudiantes públicos" ON students
@@ -106,6 +130,27 @@ CREATE POLICY "Funcionarios pueden gestionar staff" ON staff
       WHERE staff.email = current_setting('request.jwt.claim.email', true)::text
     )
   );
+
+-- Política: Permitir lectura pública de préstamos
+CREATE POLICY "Permitir lectura de préstamos" ON loans
+  FOR SELECT
+  USING (true);
+
+-- Política: Permitir inserción de préstamos (validación en frontend)
+CREATE POLICY "Permitir inserción de préstamos" ON loans
+  FOR INSERT
+  WITH CHECK (true);
+
+-- Política: Permitir actualización de préstamos (validación en frontend)
+CREATE POLICY "Permitir actualización de préstamos" ON loans
+  FOR UPDATE
+  USING (true)
+  WITH CHECK (true);
+
+-- Política: Permitir eliminación de préstamos (validación en frontend)
+CREATE POLICY "Permitir eliminación de préstamos" ON loans
+  FOR DELETE
+  USING (true);
 ```
 
 ### Estructura de Tablas
@@ -135,6 +180,20 @@ CREATE POLICY "Funcionarios pueden gestionar staff" ON staff
 - `password_history` (JSONB): Historial de cambios de contraseña
 - `created_at` (BIGINT): Timestamp de creación
 - `updated_at` (BIGINT): Timestamp de última actualización
+
+#### Tabla: `loans`
+- `id` (UUID, PK): Identificador único del préstamo
+- `student_code` (TEXT, FK): Código del estudiante
+- `student_name` (TEXT): Nombre completo del estudiante
+- `category` (TEXT): Categoría del préstamo ('biblioteca' o 'laboratorio')
+- `item_type` (TEXT): Tipo de ítem prestado
+- `item_description` (TEXT): Descripción adicional (opcional)
+- `staff_email` (TEXT): Email del funcionario que registró
+- `staff_name` (TEXT): Nombre del funcionario
+- `borrowed_at` (TIMESTAMPTZ): Fecha y hora del préstamo
+- `returned_at` (TIMESTAMPTZ): Fecha y hora de devolución (opcional)
+- `status` (TEXT): Estado ('active' o 'returned')
+- `created_at` (TIMESTAMPTZ): Timestamp de creación
 
 ## 📁 Estructura del Proyecto
 
@@ -189,6 +248,7 @@ UniversidadDelPacifico/
 - Cambiar contraseña (primer acceso)
 - Descargar PDF del carnet
 - Toggle de tema claro/oscuro
+- **Restricción**: No se puede descargar el carnet si tiene préstamos activos pendientes
 
 ### Funcionario
 - Dashboard con estadísticas
@@ -197,6 +257,12 @@ UniversidadDelPacifico/
 - Restablecer contraseñas
 - Gestionar funcionarios
 - Validar carnets con escáner
+- **Gestión de préstamos (biblioteca/laboratorio)**
+  - Registrar préstamos con fecha/hora personalizada
+  - Ver préstamos activos
+  - Marcar devoluciones
+  - Historial completo con filtros
+  - Préstamos de biblioteca (ítems predefinidos) y laboratorio (texto libre)
 - Exportar datos (JSON/CSV)
 
 ## 📱 Responsive Design

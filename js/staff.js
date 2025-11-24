@@ -3,11 +3,11 @@
  * @module staff
  */
 
-(function() {
+(function () {
   'use strict';
   if (window.__staffInit) { return; }
   window.__staffInit = true;
-  
+
   let currentSection = 'dashboard';
   let html5QrcodeScanner = null;
   let isScanning = false;
@@ -18,7 +18,7 @@
   async function waitForDependencies() {
     const maxAttempts = 50;
     let attempts = 0;
-    
+
     return new Promise((resolve) => {
       const check = () => {
         attempts++;
@@ -40,33 +40,33 @@
    */
   async function initialize() {
     await waitForDependencies();
-    
+
     // Verificar sesión
     const session = window.Auth.getSession();
     if (!session || session.role !== 'staff') {
       window.location.href = '../index.html';
       return;
     }
-    
+
     // Inicializar API
     await window.API.init();
-    
+
     // Inicializar navegación
     initNavigation();
-    
+
     // Inicializar tema
     initTheme();
-    
+
     // Inicializar menú móvil
     initMobileMenu();
-    
+
     // Inicializar secciones
     initDashboard();
     initStudentsSection();
     initStaffSection();
     initValidator();
     initExportSection();
-    
+
     // Cargar datos iniciales
     loadDashboardStats();
     renderStudentList();
@@ -79,7 +79,7 @@
   function initNavigation() {
     const navItems = document.querySelectorAll('.dashboard-nav-item');
     const sections = document.querySelectorAll('.content-section');
-    
+
     navItems.forEach(item => {
       item.addEventListener('click', (e) => {
         e.preventDefault();
@@ -100,17 +100,17 @@
    */
   function switchSection(section) {
     currentSection = section;
-    
+
     // Actualizar nav
     document.querySelectorAll('.dashboard-nav-item').forEach(item => {
       item.classList.toggle('active', item.getAttribute('data-section') === section);
     });
-    
+
     // Actualizar contenido
     document.querySelectorAll('.content-section').forEach(sec => {
       sec.classList.toggle('active', sec.id === `${section}-section`);
     });
-    
+
     // Actualizar título del header
     const titles = {
       dashboard: 'Dashboard',
@@ -119,9 +119,16 @@
       'students-passwords': 'Contraseñas',
       staff: 'Funcionarios',
       validator: 'Validar Carnet',
+      loans: 'Préstamos',
       export: 'Exportar Datos'
     };
     document.getElementById('pageTitle').textContent = titles[section] || 'Dashboard';
+    
+    // Inicializar préstamos si es necesario
+    if (section === 'loans' && window.StaffLoans && !window.__loansInitialized) {
+      window.__loansInitialized = true;
+      window.StaffLoans.init();
+    }
   }
 
   /**
@@ -130,7 +137,7 @@
   function initTheme() {
     const savedTheme = localStorage.getItem('theme') || 'light';
     document.documentElement.setAttribute('data-theme', savedTheme);
-    
+
     document.getElementById('themeToggle').addEventListener('click', () => {
       const currentTheme = document.documentElement.getAttribute('data-theme');
       const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
@@ -145,14 +152,14 @@
   function initMobileMenu() {
     const toggle = document.getElementById('mobileMenuToggle');
     const sidebar = document.getElementById('sidebar');
-    
+
     if (toggle) {
       toggle.addEventListener('click', (e) => {
         e.stopPropagation();
         sidebar.classList.toggle('open');
       });
     }
-    
+
     // Cerrar al hacer click fuera o en el overlay
     document.addEventListener('click', (e) => {
       if (window.innerWidth <= 1024 && sidebar.classList.contains('open')) {
@@ -177,7 +184,7 @@
         if (mutation.attributeName === 'class') {
           const isOpen = sidebar.classList.contains('open');
           let overlay = document.querySelector('.sidebar-overlay');
-          
+
           if (isOpen && !overlay && window.innerWidth <= 1024) {
             overlay = document.createElement('div');
             overlay.className = 'sidebar-overlay';
@@ -211,16 +218,192 @@
     try {
       const students = await window.API.Students.listAll();
       const staff = await window.API.Staff.listAll();
-      
+
       const active = students.filter(s => s.active !== false && !isExpired(s.expiry)).length;
       const expiring = students.filter(s => isExpiringSoon(s.expiry)).length;
-      
+
       document.getElementById('statTotalStudents').textContent = students.length;
       document.getElementById('statActiveCards').textContent = active;
       document.getElementById('statExpiring').textContent = expiring;
       document.getElementById('statStaff').textContent = staff.length;
+
+      // Cargar datos adicionales del dashboard expandido
+      await loadRecentLoans();
+      await loadRecentStudents(students);
     } catch (err) {
       console.error('Error al cargar estadísticas:', err);
+    }
+  }
+
+  /**
+   * Carga préstamos activos recientes para el dashboard
+   */
+  async function loadRecentLoans() {
+    const container = document.getElementById('dashboardRecentLoans');
+    if (!container) return;
+
+    try {
+      if (!window.LoansAPI) {
+        container.innerHTML = '<p class="text-secondary">Módulo de préstamos no disponible</p>';
+        return;
+      }
+
+      const result = await window.LoansAPI.getActiveLoans();
+      const loans = result.data || [];
+      const recentLoans = loans.slice(0, 5);
+
+      if (recentLoans.length === 0) {
+        container.innerHTML = '<p class="text-secondary">No hay préstamos activos en este momento</p>';
+        return;
+      }
+
+      const loansHTML = recentLoans.map(loan => `
+        <div style="padding: 12px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+          <div style="flex: 1;">
+            <strong style="color: var(--text-primary);">${loan.student_name}</strong>
+            <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 2px;">
+              ${loan.item_type} • ${loan.days_borrowed || 0} día${(loan.days_borrowed || 0) !== 1 ? 's' : ''}
+            </div>
+          </div>
+          <span class="status-badge ${loan.category}">${loan.category === 'biblioteca' ? 'Biblioteca' : 'Laboratorio'}</span>
+        </div>
+      `).join('');
+
+      container.innerHTML = loansHTML;
+    } catch (err) {
+      console.error('Error al cargar préstamos recientes:', err);
+      container.innerHTML = '<p class="text-secondary">Error al cargar préstamos</p>';
+    }
+  }
+
+  /**
+   * Carga estudiantes registrados recientemente
+   */
+  async function loadRecentStudents(students) {
+    const container = document.getElementById('dashboardRecentStudents');
+    if (!container) return;
+
+    try {
+      // Ordenar por fecha de creación (más recientes primero)
+      const sorted = [...students].sort((a, b) => (b.created_at || 0) - (a.created_at || 0));
+      const recent = sorted.slice(0, 5);
+
+      if (recent.length === 0) {
+        container.innerHTML = '<p class="text-secondary">No hay estudiantes registrados</p>';
+        return;
+      }
+
+      const studentsHTML = recent.map(student => `
+        <div style="padding: 12px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+          <div style="flex: 1;">
+            <strong style="color: var(--text-primary);">${student.name} ${student.lastname || ''}</strong>
+            <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 2px;">
+              ${student.code} • ${student.program || 'Sin programa'}
+            </div>
+          </div>
+          <span class="status-badge ${student.active !== false && !isExpired(student.expiry) ? 'active' : 'inactive'}">
+            ${student.active !== false && !isExpired(student.expiry) ? 'Activo' : 'Inactivo'}
+          </span>
+        </div>
+      `).join('');
+
+      container.innerHTML = studentsHTML;
+    } catch (err) {
+      console.error('Error al cargar estudiantes recientes:', err);
+      container.innerHTML = '<p class="text-secondary">Error al cargar estudiantes</p>';
+    }
+  }
+
+  /**
+   * Carga estadísticas por programa
+   */
+  async function loadProgramStats(students) {
+    const container = document.getElementById('dashboardProgramStats');
+    if (!container) return;
+
+    try {
+      // Agrupar por programa
+      const programCount = {};
+      students.forEach(s => {
+        const prog = s.program || 'Sin programa';
+        programCount[prog] = (programCount[prog] || 0) + 1;
+      });
+
+      // Ordenar por cantidad
+      const sorted = Object.entries(programCount).sort((a, b) => b[1] - a[1]);
+      const top5 = sorted.slice(0, 5);
+
+      if (top5.length === 0) {
+        container.innerHTML = '<p class="text-secondary">No hay datos disponibles</p>';
+        return;
+      }
+
+      const maxCount = top5[0][1];
+      const statsHTML = top5.map(([program, count]) => {
+        const percentage = (count / maxCount) * 100;
+        return `
+          <div style="margin-bottom: 16px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+              <span style="font-size: 0.875rem; color: var(--text-primary); font-weight: 500;">${program}</span>
+              <span style="font-size: 0.875rem; color: var(--text-secondary); font-weight: 600;">${count}</span>
+            </div>
+            <div style="height: 8px; background: var(--bg-tertiary); border-radius: 10px; overflow: hidden;">
+              <div style="height: 100%; width: ${percentage}%; background: linear-gradient(90deg, var(--udp-blue), var(--primary-green)); transition: width 0.3s ease;"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      container.innerHTML = statsHTML;
+    } catch (err) {
+      console.error('Error al cargar estadísticas de programas:', err);
+      container.innerHTML = '<p class="text-secondary">Error al cargar datos</p>';
+    }
+  }
+
+  /**
+   * Carga estadísticas por sede
+   */
+  async function loadSedeStats(students) {
+    const container = document.getElementById('dashboardSedeStats');
+    if (!container) return;
+
+    try {
+      // Agrupar por sede
+      const sedeCount = {};
+      students.forEach(s => {
+        const sede = s.sede || 'Sin sede';
+        sedeCount[sede] = (sedeCount[sede] || 0) + 1;
+      });
+
+      // Ordenar por cantidad
+      const sorted = Object.entries(sedeCount).sort((a, b) => b[1] - a[1]);
+
+      if (sorted.length === 0) {
+        container.innerHTML = '<p class="text-secondary">No hay datos disponibles</p>';
+        return;
+      }
+
+      const total = students.length;
+      const statsHTML = sorted.map(([sede, count]) => {
+        const percentage = ((count / total) * 100).toFixed(1);
+        return `
+          <div style="padding: 12px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+            <div style="flex: 1;">
+              <strong style="color: var(--text-primary); font-size: 0.95rem;">${sede}</strong>
+              <div style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 4px;">
+                ${percentage}% del total
+              </div>
+            </div>
+            <div style="font-size: 1.25rem; font-weight: 700; color: var(--accent-primary);">${count}</div>
+          </div>
+        `;
+      }).join('');
+
+      container.innerHTML = statsHTML;
+    } catch (err) {
+      console.error('Error al cargar estadísticas de sedes:', err);
+      container.innerHTML = '<p class="text-secondary">Error al cargar datos</p>';
     }
   }
 
@@ -233,14 +416,14 @@
     if (form) {
       form.addEventListener('submit', handleStudentSubmit);
     }
-    
+
     // Limpiar formulario
     document.getElementById('clearFormBtn')?.addEventListener('click', () => {
       form.reset();
       document.getElementById('photoPreview')?.classList.remove('active');
       document.getElementById('previewImage').src = '';
     });
-    
+
     // Vista previa de foto
     const fileInput = document.getElementById('studentPhoto');
     if (fileInput) {
@@ -251,7 +434,7 @@
       document.getElementById('photoPreview')?.classList.remove('active');
       document.getElementById('previewImage').src = '';
     });
-    
+
     // Búsqueda y filtros (sección lista)
     document.getElementById('searchInput')?.addEventListener('input', renderStudentList);
     document.getElementById('filterProgram')?.addEventListener('change', renderStudentList);
@@ -268,13 +451,13 @@
       if (filterStatus) filterStatus.value = '';
       renderStudentList();
     });
-    
+
     // Restablecer contraseña (sección contraseñas)
     document.getElementById('resetBtn')?.addEventListener('click', handleResetStudentPassword);
-    
+
     // Cargar opciones de filtros
     loadFilterOptions();
-    
+
     // Renderizar lista inicialmente
     renderStudentList();
   }
@@ -284,7 +467,7 @@
    */
   async function handleStudentSubmit(e) {
     e.preventDefault();
-    
+
     const name = window.Utils.sanitize(document.getElementById('studentName').value.trim().toUpperCase());
     const lastname = window.Utils.sanitize(document.getElementById('studentLastname').value.trim());
     const code = document.getElementById('studentCode').value.trim();
@@ -294,28 +477,28 @@
     const sede = document.getElementById('studentSede').value.trim();
     const rh = document.getElementById('studentRH').value.trim();
     const active = document.getElementById('studentActive').checked;
-    
+
     // Validaciones
     if (!name || !lastname || !code || !cedula || !program || !expiryInput || !sede) {
       window.showModal.warning('Campos incompletos', 'Completa todos los campos requeridos.');
       return;
     }
-    
+
     if (!window.Utils.validateStudentCode(code)) {
       window.showModal.warning('Código inválido', 'El código debe ser numérico de 6 a 12 dígitos.');
       return;
     }
-    
+
     if (!window.Utils.validateCedula(cedula)) {
       window.showModal.warning('Cédula inválida', 'La cédula debe tener entre 8 y 10 dígitos numéricos.');
       return;
     }
-    
+
     if (window.Utils.isPastDateYmd(expiryInput)) {
       window.showModal.warning('Fecha inválida', 'La fecha de expiración no puede estar en el pasado.');
       return;
     }
-    
+
     // Foto
     let photoData = null;
     const previewImg = document.getElementById('previewImage');
@@ -327,21 +510,21 @@
         photoData = existing.photo;
       }
     }
-    
+
     const formattedExpiry = window.Utils.formatDateToSpanish(expiryInput);
     const finalActive = active && !window.Utils.isPastDateYmd(expiryInput) ? true : false;
-    
+
     try {
       await window.API.Students.createOrUpdate({
         name, lastname, code, cedula, program,
         expiry: formattedExpiry, sede, rh, photo: photoData, active: finalActive
       });
-      
+
       window.showModal.success('Guardado', 'El carnet y el perfil del estudiante se han guardado.');
       renderStudentList();
       loadDashboardStats();
       loadFilterOptions();
-      
+
       // Limpiar formulario después de crear nuevo estudiante
       const existing = await window.API.Students.getByCode(code);
       if (!existing || existing.code !== code) {
@@ -359,13 +542,13 @@
   async function handlePhotoUpload(e) {
     const file = e.target.files[0];
     if (!file) return;
-    
+
     if (!file.type.startsWith('image/')) {
       window.showModal.warning('Archivo inválido', 'Por favor selecciona una imagen.');
       e.target.value = '';
       return;
     }
-    
+
     try {
       const resizedPhoto = await window.Utils.resizeImage(file, 400, 500, 0.9);
       if (resizedPhoto) {
@@ -385,7 +568,7 @@
   async function renderStudentList() {
     const listNode = document.getElementById('studentList');
     if (!listNode) return;
-    
+
     const all = await window.API.Students.listAll();
     const filters = {
       search: document.getElementById('searchInput')?.value.trim() || '',
@@ -393,7 +576,7 @@
       sede: document.getElementById('filterSede')?.value || '',
       status: document.getElementById('filterStatus')?.value || ''
     };
-    
+
     let filtered = all.filter(s => {
       if (filters.search) {
         const term = filters.search.toLowerCase();
@@ -416,19 +599,19 @@
       }
       return true;
     }).sort((a, b) => (a.code || '').localeCompare(b.code || ''));
-    
+
     document.getElementById('studentCount').textContent = `${filtered.length} de ${all.length} estudiante(s)`;
-    
+
     if (!filtered.length) {
       listNode.innerHTML = '<p class="text-tertiary">No se encontraron estudiantes con los filtros seleccionados.</p>';
       return;
     }
-    
+
     listNode.innerHTML = filtered.map(s => {
       const expired = isExpired(s.expiry);
       const expiring = isExpiringSoon(s.expiry);
       const isActive = s.active !== false;
-      
+
       let statusBadge = '';
       if (!isActive) {
         statusBadge = '<span class="status-badge inactive">INACTIVO</span>';
@@ -439,7 +622,7 @@
       } else {
         statusBadge = '<span class="status-badge active">ACTIVO</span>';
       }
-      
+
       return `
         <div class="student-item" data-code="${s.code}">
           <div class="student-info">
@@ -455,7 +638,7 @@
         </div>
       `;
     }).join('');
-    
+
     // Event listeners para redirigir a sección de edición al hacer click
     listNode.querySelectorAll('.student-item').forEach(el => {
       el.addEventListener('click', async () => {
@@ -470,7 +653,7 @@
           if (createTab) {
             createTab.classList.add('active');
           }
-          
+
           // Cambiar la sección activa
           document.querySelectorAll('.content-section').forEach(section => {
             section.classList.remove('active');
@@ -479,13 +662,13 @@
           if (createSection) {
             createSection.classList.add('active');
           }
-          
+
           // Actualizar título
           const pageTitle = document.getElementById('pageTitle');
           if (pageTitle) {
             pageTitle.textContent = 'Administrar Estudiante';
           }
-          
+
           // Cargar datos en el formulario
           fillFormFromStudent(student);
           window.showModal.info('Cargado', 'Datos del estudiante cargados. Puedes editarlos ahora.');
@@ -503,11 +686,11 @@
     document.getElementById('studentCode').value = s.code || '';
     document.getElementById('studentCedula').value = s.cedula || '';
     document.getElementById('studentProgram').value = s.program || '';
-    
+
     // Formatear fecha española al formato YYYY-MM-DD
     if (s.expiry && s.expiry.includes(' ')) {
       const parts = s.expiry.split(' ');
-      const months = ['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE'];
+      const months = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
       const monthIndex = months.indexOf(parts[1]);
       if (monthIndex !== -1) {
         const date = new Date(parseInt(parts[2]), monthIndex, parseInt(parts[0]));
@@ -516,14 +699,14 @@
     } else if (s.expiry) {
       document.getElementById('studentExpiry').value = s.expiry;
     }
-    
+
     document.getElementById('studentSede').value = s.sede || 'Buenaventura';
     document.getElementById('studentRH').value = s.rh || '';
-    
+
     const isActive = s.active !== false;
     document.getElementById('studentActive').checked = isActive;
     document.getElementById('studentInactive').checked = !isActive;
-    
+
     if (s.photo) {
       document.getElementById('previewImage').src = s.photo;
       document.getElementById('photoPreview').classList.add('active');
@@ -538,15 +721,15 @@
     const all = await window.API.Students.listAll();
     const programs = [...new Set(all.map(s => s.program).filter(Boolean))].sort();
     const sedes = [...new Set(all.map(s => s.sede).filter(Boolean))].sort();
-    
+
     const programSelect = document.getElementById('filterProgram');
     const sedeSelect = document.getElementById('filterSede');
-    
+
     if (programSelect) {
       programSelect.innerHTML = '<option value="">Todos los programas</option>' +
         programs.map(p => `<option value="${p}">${p}</option>`).join('');
     }
-    
+
     if (sedeSelect) {
       sedeSelect.innerHTML = '<option value="">Todas las sedes</option>' +
         sedes.map(s => `<option value="${s}">${s}</option>`).join('');
@@ -559,12 +742,12 @@
   async function handleResetStudentPassword() {
     const code = document.getElementById('resetCode').value.trim();
     const pwd = document.getElementById('resetPwd').value.trim();
-    
+
     if (!code || !pwd) {
       window.showModal.warning('Campos requeridos', 'Ingresa código y nueva contraseña.');
       return;
     }
-    
+
     try {
       const session = window.Auth.getSession();
       await window.API.Students.resetPassword(code, pwd, session?.email || 'staff');
@@ -582,13 +765,13 @@
   function initStaffSection() {
     // Formulario de registro
     document.getElementById('staffRegisterForm').addEventListener('submit', handleStaffRegister);
-    
+
     // Restablecer contraseña
     document.getElementById('resetStaffBtn')?.addEventListener('click', handleResetStaffPassword);
-    
+
     // Búsqueda
     document.getElementById('searchStaffInput')?.addEventListener('input', renderStaffList);
-    
+
     // Exportar
     document.getElementById('exportDownloadBtn')?.addEventListener('click', handleExport);
   }
@@ -598,16 +781,16 @@
    */
   async function handleStaffRegister(e) {
     e.preventDefault();
-    
+
     const name = document.getElementById('staffName').value.trim();
     const email = document.getElementById('staffEmail').value.trim();
     const password = document.getElementById('staffPassword').value.trim();
-    
+
     if (!name || !email || !password) {
       window.showModal.warning('Campos requeridos', 'Completa todos los campos.');
       return;
     }
-    
+
     try {
       await window.API.Staff.create({ name, email, password });
       window.showModal.success('Registrado', 'Funcionario creado correctamente.');
@@ -625,10 +808,10 @@
   async function renderStaffList() {
     const listNode = document.getElementById('staffList');
     if (!listNode) return;
-    
+
     const all = await window.API.Staff.listAll();
     const search = document.getElementById('searchStaffInput')?.value.trim().toLowerCase() || '';
-    
+
     const filtered = all.filter(s => {
       if (search) {
         const name = (s.name || '').toLowerCase();
@@ -637,14 +820,14 @@
       }
       return true;
     });
-    
+
     document.getElementById('staffCount').textContent = `${filtered.length} funcionario(s)`;
-    
+
     if (!filtered.length) {
       listNode.innerHTML = '<p class="text-tertiary">No se encontraron funcionarios.</p>';
       return;
     }
-    
+
     listNode.innerHTML = filtered.map(s => {
       const id = s.id || s.email || 'unknown';
       return `
@@ -664,11 +847,11 @@
   /**
    * Elimina un funcionario
    */
-  window.deleteStaff = async function(id) {
+  window.deleteStaff = async function (id) {
     if (!await window.showModal.confirm('Confirmar', `¿Estás seguro de eliminar a este funcionario?`)) {
       return;
     }
-    
+
     try {
       await window.API.Staff.delete(id);
       window.showModal.success('Eliminado', 'Funcionario eliminado correctamente.');
@@ -685,12 +868,12 @@
   async function handleResetStaffPassword() {
     const email = document.getElementById('resetStaffEmail').value.trim();
     const pwd = document.getElementById('resetStaffPwd').value.trim();
-    
+
     if (!email || !pwd) {
       window.showModal.warning('Campos requeridos', 'Ingresa email y nueva contraseña.');
       return;
     }
-    
+
     try {
       const session = window.Auth.getSession();
       await window.API.Staff.resetPassword(email, pwd, session?.email || 'staff');
@@ -714,7 +897,7 @@
    */
   async function handleExport() {
     const type = document.getElementById('exportType').value;
-    
+
     try {
       if (type.includes('students')) {
         const data = await window.API.Students.listAll();
@@ -769,9 +952,9 @@
   function initValidator() {
     const startBtn = document.getElementById('startScanBtn');
     const stopBtn = document.getElementById('stopScanBtn');
-    
+
     if (!startBtn || !stopBtn) return;
-    
+
     startBtn.addEventListener('click', startScanner);
     stopBtn.addEventListener('click', stopScanner);
   }
@@ -784,21 +967,21 @@
       window.showModal.warning('Librería No Disponible', 'La librería de escaneo no está disponible.');
       return;
     }
-    
+
     const startBtn = document.getElementById('startScanBtn');
     const stopBtn = document.getElementById('stopScanBtn');
-    
+
     startBtn.style.display = 'none';
     stopBtn.style.display = 'inline-flex';
-    
+
     html5QrcodeScanner = new Html5Qrcode("barcode-reader");
-    
+
     const config = {
       fps: 10,
       qrbox: { width: 300, height: 120 },
       aspectRatio: 1.0
     };
-    
+
     if (typeof Html5QrcodeSupportedFormats !== 'undefined') {
       config.formatsToSupport = [
         Html5QrcodeSupportedFormats.CODE_128,
@@ -809,7 +992,7 @@
         Html5QrcodeSupportedFormats.UPC_E
       ];
     }
-    
+
     try {
       await html5QrcodeScanner.start(
         { facingMode: "environment" },
@@ -866,13 +1049,13 @@
     if (code.startsWith('UPAC-')) {
       studentCode = code.substring(5);
     }
-    
+
     try {
       const student = await window.API.Students.getByCode(studentCode);
       if (student) {
         const isActive = student.active !== false;
         const statusText = isActive ? '<span class="status-badge active">ACTIVO</span>' : '<span class="status-badge inactive">INACTIVO</span>';
-        
+
         const message = `
           <div style="text-align: left; margin-top: 12px;">
             <p><strong>Estado:</strong> ${statusText}</p>
@@ -885,7 +1068,7 @@
             <p><strong>Sede:</strong> ${student.sede || 'N/A'}</p>
           </div>
         `;
-        
+
         if (isActive) {
           window.showModal.success('Carnet Válido', `El carnet pertenece a un estudiante registrado y está activo.${message}`);
         } else {
@@ -908,7 +1091,7 @@
       let expiryDate;
       if (expiry.includes(' ')) {
         const parts = expiry.split(' ');
-        const months = ['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE'];
+        const months = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
         const monthIndex = months.indexOf(parts[1]);
         if (monthIndex !== -1) {
           expiryDate = new Date(parseInt(parts[2]), monthIndex, parseInt(parts[0]));
@@ -922,7 +1105,7 @@
         expiryDate.setHours(0, 0, 0, 0);
         return expiryDate < today;
       }
-    } catch (e) {}
+    } catch (e) { }
     return false;
   }
 
@@ -935,7 +1118,7 @@
       let expiryDate;
       if (expiry.includes(' ')) {
         const parts = expiry.split(' ');
-        const months = ['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SEPTIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE'];
+        const months = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
         const monthIndex = months.indexOf(parts[1]);
         if (monthIndex !== -1) {
           expiryDate = new Date(parseInt(parts[2]), monthIndex, parseInt(parts[0]));
@@ -948,7 +1131,7 @@
         const daysUntilExpiry = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
         return daysUntilExpiry >= 0 && daysUntilExpiry <= 30;
       }
-    } catch (e) {}
+    } catch (e) { }
     return false;
   }
 

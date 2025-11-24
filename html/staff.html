@@ -34,6 +34,7 @@
   <link rel="stylesheet" href="../css/theme.css" />
   <link rel="stylesheet" href="../css/form.css" />
   <link rel="stylesheet" href="../css/admin.css" />
+  <link rel="stylesheet" href="../css/loans.css" />
   <link rel="stylesheet" href="../css/validator.css" />
   <link rel="stylesheet" href="../css/modal.css" />
 </head>
@@ -93,6 +94,13 @@
           </svg>
           Validar Carnet
         </a>
+        <a href="#loans" class="dashboard-nav-item" data-section="loans">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+          </svg>
+          Préstamos
+        </a>
         <a href="#export" class="dashboard-nav-item" data-section="export">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -145,6 +153,29 @@
       <div class="dashboard-content">
         <!-- Dashboard Section -->
         <section id="dashboard-section" class="content-section active">
+          <!-- Mensaje de bienvenida -->
+          <div class="card mb-6" style="background: linear-gradient(135deg, var(--udp-blue), var(--primary-green)); border: none;">
+            <div class="card-body" style="padding: 32px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px;">
+                <div style="flex: 1; min-width: 250px;">
+                  <h1 style="color: white; font-size: 1.75rem; font-weight: 700; margin-bottom: 8px;">
+                    ¡Bienvenido al Panel de Administración!
+                  </h1>
+                  <p style="color: rgba(255, 255, 255, 0.9); font-size: 1rem; line-height: 1.6;" id="welcomeMessage">
+                    Sistema de Gestión de Carnets Digitales - Universidad del Pacífico
+                  </p>
+                </div>
+                <div style="width: 80px; height: 80px; background: rgba(255, 255, 255, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px);">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                    <path d="M2 17l10 5 10-5"></path>
+                    <path d="M2 12l10 5 10-5"></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <div class="card">
               <div class="card-body">
@@ -210,6 +241,35 @@
                       <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
                     </svg>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sección de contenido expandido -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Préstamos Activos -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Préstamos Activos Recientes</h3>
+                <p class="card-subtitle">Últimos 5 préstamos activos</p>
+              </div>
+              <div class="card-body">
+                <div id="dashboardRecentLoans">
+                  <p class="text-secondary">Cargando préstamos...</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Estudiantes Recientes -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Estudiantes Registrados Recientemente</h3>
+                <p class="card-subtitle">Últimos 5 carnets emitidos</p>
+              </div>
+              <div class="card-body">
+                <div id="dashboardRecentStudents">
+                  <p class="text-secondary">Cargando estudiantes...</p>
                 </div>
               </div>
             </div>
@@ -323,35 +383,41 @@
               <p class="card-subtitle" id="studentCount">0 estudiantes</p>
             </div>
             <div class="card-body">
-              <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-4">
-                <div class="lg:col-span-2">
-                  <input type="text" id="searchInput" class="form-input" placeholder="Buscar por código, cédula o nombre..." />
-                </div>
-                <div>
-                  <select id="filterProgram" class="form-select">
-                    <option value="">Todos los programas</option>
-                  </select>
-                </div>
-                <div>
-                  <select id="filterSede" class="form-select">
-                    <option value="">Todas las sedes</option>
-                  </select>
+              <!-- Filtros de búsqueda -->
+              <div class="filters-container mb-4">
+                <div class="filters-row">
+                  <div class="filter-item filter-search">
+                    <input type="text" id="searchInput" class="form-input" placeholder="Buscar por código, cédula o nombre..." />
+                  </div>
+                  <div class="filter-item">
+                    <select id="filterProgram" class="form-select">
+                      <option value="">Todos los programas</option>
+                    </select>
+                  </div>
+                  <div class="filter-item">
+                    <select id="filterSede" class="form-select">
+                      <option value="">Todas las sedes</option>
+                    </select>
+                  </div>
+                  <div class="filter-item">
+                    <select id="filterStatus" class="form-select">
+                      <option value="">Todos</option>
+                      <option value="active">Activos</option>
+                      <option value="expired">Expirados</option>
+                      <option value="expiring">Por vencer</option>
+                    </select>
+                  </div>
+                  <div class="filter-item filter-action">
+                    <button class="btn btn-secondary w-full" id="clearFiltersBtn">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                      </svg>
+                      Limpiar
+                    </button>
+                  </div>
                 </div>
               </div>
-              <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-4">
-                <div>
-                  <select id="filterStatus" class="form-select">
-                    <option value="">Todos</option>
-                    <option value="active">Activos</option>
-                    <option value="expired">Expirados</option>
-                    <option value="expiring">Por vencer</option>
-                  </select>
-                </div>
-                <div>
-                  <button class="btn btn-secondary btn-sm" id="clearFiltersBtn" style="width: 100%;">Limpiar filtros</button>
-                </div>
-              </div>
-              <div class="student-list" id="studentList" style="max-height: 600px; overflow-y: auto;"></div>
+              <div class="student-list" id="studentList"></div>
             </div>
           </div>
         </section>
@@ -440,7 +506,7 @@
                 <div class="form-group mb-3">
                   <input type="text" id="searchStaffInput" class="form-input" placeholder="Buscar funcionario..." />
                 </div>
-                <div class="staff-list" id="staffList" style="max-height: 400px; overflow-y: auto;"></div>
+                <div class="staff-list" id="staffList"></div>
               </div>
             </div>
 
@@ -464,6 +530,142 @@
               </div>
             </div>
 
+          </div>
+        </section>
+
+        <!-- Export Section -->
+        </section>
+
+        <!-- Loans Section -->
+        <section id="loans-section" class="content-section">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Registrar Préstamo -->
+            <div class="card">
+              <div class="card-header">
+                <h2 class="card-title">Registrar Préstamo</h2>
+                <p class="card-subtitle">Préstamo de ítems de biblioteca o laboratorio</p>
+              </div>
+              <div class="card-body">
+                <form id="loanForm">
+                  <!-- Tipo de préstamo -->
+                  <div class="form-group">
+                    <label class="form-label">Tipo de préstamo</label>
+                    <div class="carnet-status-wrapper">
+                      <label class="carnet-status-option">
+                        <input type="radio" name="loanCategory" value="biblioteca" checked />
+                        <span class="carnet-status-label-text">Biblioteca</span>
+                      </label>
+                      <label class="carnet-status-option">
+                        <input type="radio" name="loanCategory" value="laboratorio" />
+                        <span class="carnet-status-label-text">Laboratorio</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <!-- Código estudiante -->
+                  <div class="form-group">
+                    <label for="loanStudentCode" class="form-label">Código del estudiante *</label>
+                    <input type="text" id="loanStudentCode" class="form-input" placeholder="Ej: 2024001" required />
+                    <small id="loanStudentInfo" class="form-help"></small>
+                  </div>
+
+                  <!-- Ítem de biblioteca (select) -->
+                  <div class="form-group" id="libraryItemGroup">
+                    <label for="libraryItem" class="form-label">Ítem *</label>
+                    <select id="libraryItem" class="form-select" required>
+                      <option value="">Seleccione un ítem</option>
+                      <option value="Computador de escritorio">Computador de escritorio</option>
+                      <option value="Computador portátil">Computador portátil</option>
+                      <option value="Audífonos">Audífonos</option>
+                      <option value="Libros">Libros</option>
+                      <option value="Juegos de mesa">Juegos de mesa</option>
+                    </select>
+                  </div>
+
+                  <!-- Ítem de laboratorio (input manual) -->
+                  <div class="form-group" id="labItemGroup" style="display: none;">
+                    <label for="labItem" class="form-label">Ítem solicitado *</label>
+                    <input type="text" id="labItem" class="form-input" placeholder="Ej: Multímetro digital, Osciloscopio..." />
+                    <small class="form-help">Ingrese el nombre del equipo, herramienta o material</small>
+                  </div>
+
+                  <!-- Fecha y hora del préstamo -->
+                  <div class="form-row two-cols">
+                    <div class="form-group">
+                      <label for="loanDate" class="form-label">Fecha del préstamo</label>
+                      <input type="date" id="loanDate" class="form-input" />
+                      <small class="form-help">Dejar vacío para usar fecha actual</small>
+                    </div>
+                    <div class="form-group">
+                      <label for="loanTime" class="form-label">Hora del préstamo</label>
+                      <input type="time" id="loanTime" class="form-input" />
+                      <small class="form-help">Dejar vacío para usar hora actual</small>
+                    </div>
+                  </div>
+
+                  <!-- Descripción adicional (opcional) -->
+                  <div class="form-group">
+                    <label for="loanDescription" class="form-label">Descripción adicional (opcional)</label>
+                    <textarea id="loanDescription" class="form-input" rows="2" placeholder="Detalles adicionales del ítem o condiciones..."></textarea>
+                  </div>
+
+                  <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-green">Registrar préstamo</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- Préstamos Activos -->
+            <div class="card">
+              <div class="card-header">
+                <h2 class="card-title">Préstamos Activos</h2>
+                <p class="card-subtitle" id="activeLoansCount">0 préstamos activos</p>
+              </div>
+              <div class="card-body">
+                <div id="activeLoansContainer" style="max-height: 500px; overflow-y: auto;">
+                  <p class="text-secondary">No hay préstamos activos</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Historial de Préstamos -->
+          <div class="card mt-6">
+            <div class="card-header">
+              <h2 class="card-title">Historial de Préstamos</h2>
+              <p class="card-subtitle">Registro completo de todos los préstamos</p>
+            </div>
+            <div class="card-body">
+              <!-- Filtros -->
+              <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-4">
+                <div>
+                  <input type="text" id="filterLoanStudent" class="form-input" placeholder="Buscar por código estudiante..." />
+                </div>
+                <div>
+                  <select id="filterLoanCategory" class="form-select">
+                    <option value="">Todas las categorías</option>
+                    <option value="biblioteca">Biblioteca</option>
+                    <option value="laboratorio">Laboratorio</option>
+                  </select>
+                </div>
+                <div>
+                  <select id="filterLoanStatus" class="form-select">
+                    <option value="">Todos los estados</option>
+                    <option value="active">Activos</option>
+                    <option value="returned">Devueltos</option>
+                  </select>
+                </div>
+                <div>
+                  <button class="btn btn-secondary btn-sm" id="clearLoansFiltersBtn" style="width: 100%;">Limpiar filtros</button>
+                </div>
+              </div>
+
+              <!-- Tabla de historial -->
+              <div id="loansHistoryContainer" style="max-height: 400px; overflow-y: auto;">
+                <p class="text-secondary">Cargando historial...</p>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -506,6 +708,8 @@
   <script src="../js/utils.js"></script>
   <script src="../js/auth.js"></script>
   <script src="../js/card.js"></script>
+  <script src="../js/loans.js"></script>
+  <script src="../js/staff-loans.js"></script>
   <script src="../js/staff.js"></script>
 </body>
 </html>

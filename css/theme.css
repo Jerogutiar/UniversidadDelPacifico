@@ -27,18 +27,21 @@
   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
   --accent-primary: var(--udp-blue);
   --accent-secondary: var(--udp-green);
-  
+
   /* Cards y componentes */
   --card-bg: #ffffff;
   --card-hover: #f8fafc;
   --input-bg: #ffffff;
   --input-border: #cbd5e0;
-  
+
   /* Estados */
   --success: var(--udp-green);
   --error: #ef4444;
   --warning: #f59e0b;
   --info: var(--udp-blue);
+
+  /* Assets */
+  --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
 }
 
 [data-theme="dark"] {
@@ -55,18 +58,21 @@
   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.7);
   --accent-primary: var(--udp-blue-light);
   --accent-secondary: var(--udp-green-light);
-  
+
   /* Cards y componentes */
   --card-bg: #1a1f26;
   --card-hover: #252b33;
   --input-bg: #0f1419;
   --input-border: #475569;
-  
+
   /* Estados */
   --success: var(--udp-green-light);
   --error: #f87171;
   --warning: #fbbf24;
   --info: var(--udp-blue-light);
+
+  /* Assets */
+  --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23e2e8f0' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
 }
 
 /* Transiciones suaves para cambio de tema */
@@ -203,7 +209,8 @@ body {
   z-index: 100;
   box-shadow: var(--shadow-sm);
   min-height: 72px;
-  gap: 16px; /* Espacio entre título y botón hamburger */
+  gap: 16px;
+  /* Espacio entre título y botón hamburger */
 }
 
 .dashboard-header-title {
@@ -255,9 +262,12 @@ body {
   cursor: pointer;
   color: var(--text-primary);
   transition: all 0.2s ease;
-  margin-left: auto; /* Empuja el botón a la derecha */
-  flex-shrink: 0; /* No se encoge */
-  z-index: 101; /* Encima del header pero debajo del sidebar */
+  margin-left: auto;
+  /* Empuja el botón a la derecha */
+  flex-shrink: 0;
+  /* No se encoge */
+  z-index: 101;
+  /* Encima del header pero debajo del sidebar */
 }
 
 .mobile-menu-toggle:hover {
@@ -318,10 +328,21 @@ body {
   gap: 24px;
 }
 
-.grid-cols-1 { grid-template-columns: repeat(1, 1fr); }
-.grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
-.grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
-.grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+.grid-cols-1 {
+  grid-template-columns: repeat(1, 1fr);
+}
+
+.grid-cols-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.grid-cols-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
 
 /* ============================================
    BOTONES
@@ -486,11 +507,13 @@ body {
    RESPONSIVE - TABLETAS Y MÓVILES
    ============================================ */
 @media (max-width: 1024px) {
+
   /* Sidebar oculto por defecto en móvil */
   .dashboard-sidebar {
     transform: translateX(-100%);
     transition: transform 0.3s ease;
-    z-index: 1000; /* Debajo del overlay pero encima del contenido */
+    z-index: 1000;
+    /* Debajo del overlay pero encima del contenido */
     position: fixed;
     height: 100vh;
     top: 0;
@@ -521,7 +544,7 @@ body {
   .grid-cols-4 {
     grid-template-columns: 1fr;
   }
-  
+
   /* Configuración de overflow para contenido */
   .dashboard-content,
   .dashboard-main {
@@ -538,6 +561,7 @@ body {
 }
 
 @media (max-width: 768px) {
+
   /* Headers y contenido más compactos */
   .dashboard-header {
     padding: 12px 16px;
@@ -567,14 +591,14 @@ body {
     max-width: 100%;
     box-sizing: border-box;
   }
-  
+
   /* Listas responsivas */
   .student-list,
   .staff-list {
     padding: 0;
     margin: 0;
   }
-  
+
   .student-item,
   .staff-item {
     padding: 12px;
@@ -596,30 +620,141 @@ body {
    UTILIDADES
    ============================================ */
 
-.text-primary { color: var(--text-primary); }
-.text-secondary { color: var(--text-secondary); }
-.text-tertiary { color: var(--text-tertiary); }
+.text-primary {
+  color: var(--text-primary);
+}
 
-.bg-primary { background: var(--bg-primary); }
-.bg-secondary { background: var(--bg-secondary); }
-.bg-tertiary { background: var(--bg-tertiary); }
+.text-secondary {
+  color: var(--text-secondary);
+}
 
-.mt-1 { margin-top: 8px; }
-.mt-2 { margin-top: 16px; }
-.mt-3 { margin-top: 24px; }
-.mb-1 { margin-bottom: 8px; }
-.mb-2 { margin-bottom: 16px; }
-.mb-3 { margin-bottom: 24px; }
+.text-tertiary {
+  color: var(--text-tertiary);
+}
 
-.p-1 { padding: 8px; }
-.p-2 { padding: 16px; }
-.p-3 { padding: 24px; }
+.bg-primary {
+  background: var(--bg-primary);
+}
 
-.flex { display: flex; }
-.flex-col { flex-direction: column; }
-.items-center { align-items: center; }
-.justify-between { justify-content: space-between; }
-.gap-2 { gap: 16px; }
-.gap-3 { gap: 24px; }
+.bg-secondary {
+  background: var(--bg-secondary);
+}
 
-.hidden { display: none; }
+.bg-tertiary {
+  background: var(--bg-tertiary);
+}
+
+.mt-1 {
+  margin-top: 8px;
+}
+
+.mt-2 {
+  margin-top: 16px;
+}
+
+.mt-3 {
+  margin-top: 24px;
+}
+
+.mb-1 {
+  margin-bottom: 8px;
+}
+
+.mb-2 {
+  margin-bottom: 16px;
+}
+
+.mb-3 {
+  margin-bottom: 24px;
+}
+
+.p-1 {
+  padding: 8px;
+}
+
+.p-2 {
+  padding: 16px;
+}
+
+.p-3 {
+  padding: 24px;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.gap-2 {
+  gap: 16px;
+}
+
+.gap-3 {
+  gap: 24px;
+}
+
+.hidden {
+  display: none;
+}
+
+/* ============================================
+   SCROLLBAR PERSONALIZADA GLOBAL
+   ============================================ */
+
+/* Scrollbar para WebKit (Chrome, Safari, Edge, Opera) */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-tertiary);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--udp-blue), var(--primary-green));
+  border-radius: 10px;
+  border: 2px solid var(--bg-tertiary);
+  transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--udp-blue-light), var(--udp-green-light));
+  border-color: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(180deg, var(--udp-blue-dark), var(--udp-green-dark));
+}
+
+/* Scrollbar horizontal */
+::-webkit-scrollbar-corner {
+  background: var(--bg-tertiary);
+}
+
+/* Scrollbar para Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--udp-blue) var(--bg-tertiary);
+}
+
+/* Tema oscuro - scrollbar más visible */
+[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  border-color: var(--bg-secondary);
+}

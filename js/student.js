@@ -157,7 +157,8 @@
           const backNode = document.getElementById('cardBack');
           
           if (frontNode && backNode) {
-            downloadPdfDirectly();
+            // Verificar si hay préstamos activos
+            checkActiveLoansBeforeDownload();
             setTimeout(() => {
               document.getElementById('cardSection').style.display = 'block';
               document.getElementById('firstLoginSection').style.display = 'none';
@@ -176,6 +177,41 @@
     });
   }
   initNavigation();
+
+  /**
+   * Verifica préstamos activos antes de descargar
+   */
+  async function checkActiveLoansBeforeDownload() {
+    try {
+      // Verificar si el módulo de préstamos está disponible
+      if (!window.LoansAPI) {
+        // Si no está disponible, permitir descarga
+        downloadPdfDirectly();
+        return;
+      }
+      
+      const result = await window.LoansAPI.getStudentActiveLoans(session.code);
+      
+      if (result.success && result.data && result.data.length > 0) {
+        // El estudiante tiene préstamos activos
+        const loansList = result.data.map(loan => 
+          `• ${loan.item_type} (${loan.category === 'biblioteca' ? 'Biblioteca' : 'Laboratorio'})`
+        ).join('\n');
+        
+        window.showModal && window.showModal.warning(
+          'Descarga no permitida',
+          `No puedes descargar tu carnet porque tienes préstamos activos pendientes de devolución:\n\n${loansList}\n\nPor favor, devuelve los ítems prestados para poder descargar tu carnet.`
+        );
+      } else {
+        // No hay préstamos activos, permitir descarga
+        downloadPdfDirectly();
+      }
+    } catch (error) {
+      console.error('Error al verificar préstamos:', error);
+      // En caso de error, permitir descarga
+      downloadPdfDirectly();
+    }
+  }
 
   /**
    * Descarga el PDF directamente sin sección extra

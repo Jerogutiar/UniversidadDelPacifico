@@ -146,6 +146,32 @@
   color: var(--text-tertiary);
 }
 
+/* Estilos para inputs de fecha y hora */
+.form-input[type="date"],
+.form-input[type="time"] {
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+/* Asegurar que el ícono del calendario/reloj se vea en tema oscuro */
+.form-input[type="date"]::-webkit-calendar-picker-indicator,
+.form-input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: var(--date-time-icon-filter, none);
+  cursor: pointer;
+}
+
+/* Filtro para íconos en tema oscuro */
+[data-theme="dark"] .form-input[type="date"]::-webkit-calendar-picker-indicator,
+[data-theme="dark"] .form-input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) brightness(1.2);
+}
+
+/* Hover effect para date/time inputs */
+.form-input[type="date"]:hover,
+.form-input[type="time"]:hover {
+  border-color: var(--accent-primary);
+}
+
 .form-help {
   display: block;
   margin-top: 6px;
@@ -274,7 +300,7 @@
   font-family: inherit;
   cursor: pointer;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-image: var(--select-arrow);
   background-repeat: no-repeat;
   background-position: right 16px center;
   padding-right: 40px;
@@ -284,6 +310,21 @@
   outline: none;
   border-color: var(--accent-primary);
   box-shadow: 0 0 0 4px rgba(0, 51, 102, 0.1);
+}
+
+/* Estilos para opciones del select */
+.form-select option {
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+}
+
+/* Estilos para input type date */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+}
+
+[data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
 }
 
 .form-textarea {
@@ -428,7 +469,7 @@
   .carnet-status-wrapper {
     flex-direction: column;
   }
-  
+
   /* Configuración de overflow para formularios */
   .form-section,
   .login-container {

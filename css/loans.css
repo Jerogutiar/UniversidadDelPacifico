@@ -1,0 +1,219 @@
+/* ============================================
+   ESTILOS DE PRÉSTAMOS
+   Sistema de Carnet Digital - Universidad del Pacífico
+   ============================================ */
+
+/* Scrollbar personalizada para contenedor de préstamos */
+#activeLoansContainer {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+/* Scrollbar personalizada - WebKit (Chrome, Safari, Edge) */
+#activeLoansContainer::-webkit-scrollbar,
+#loansHistoryContainer::-webkit-scrollbar {
+    width: 8px;
+}
+
+#activeLoansContainer::-webkit-scrollbar-track,
+#loansHistoryContainer::-webkit-scrollbar-track {
+    background: var(--bg-tertiary);
+    border-radius: 10px;
+}
+
+#activeLoansContainer::-webkit-scrollbar-thumb,
+#loansHistoryContainer::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--udp-blue), var(--primary-green));
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+#activeLoansContainer::-webkit-scrollbar-thumb:hover,
+#loansHistoryContainer::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #5eb8e0, #4ade80);
+}
+
+/* Scrollbar para Firefox */
+#activeLoansContainer,
+#loansHistoryContainer {
+    scrollbar-width: thin;
+    scrollbar-color: var(--udp-blue) var(--bg-tertiary);
+}
+
+/* Ítem de préstamo activo - Más compacto */
+.loan-item {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 8px;
+    transition: all 0.2s ease;
+}
+
+.loan-item:hover {
+    border-color: var(--accent-primary);
+    box-shadow: var(--shadow-sm);
+    transform: translateX(2px);
+}
+
+.loan-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.loan-item-code {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    margin-top: 2px;
+}
+
+.loan-item-body {
+    margin-bottom: 8px;
+}
+
+.loan-item-body p {
+    margin: 2px 0;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.loan-item-body p strong {
+    font-weight: 600;
+    margin-right: 4px;
+}
+
+.loan-item-actions {
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+    margin-top: 8px;
+}
+
+/* Badges de categoría y estado - Colores mejorados y compactos */
+.status-badge {
+    padding: 3px 8px;
+    font-size: 0.75rem;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.status-badge.biblioteca {
+    background: linear-gradient(135deg, rgba(37, 150, 190, 0.15), rgba(37, 150, 190, 0.08));
+    color: var(--udp-blue);
+    border: 1px solid var(--udp-blue);
+    font-weight: 600;
+}
+
+[data-theme="dark"] .status-badge.biblioteca {
+    background: linear-gradient(135deg, rgba(37, 150, 190, 0.25), rgba(37, 150, 190, 0.12));
+    color: #5eb8e0;
+}
+
+.status-badge.laboratorio {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(168, 85, 247, 0.08));
+    color: #9333ea;
+    border: 1px solid #a855f7;
+    font-weight: 600;
+}
+
+[data-theme="dark"] .status-badge.laboratorio {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(168, 85, 247, 0.12));
+    color: #c084fc;
+}
+
+.status-badge.active {
+    background: linear-gradient(135deg, rgba(55, 163, 114, 0.15), rgba(55, 163, 114, 0.08));
+    color: var(--primary-green);
+    border: 1px solid var(--primary-green);
+    font-weight: 600;
+}
+
+[data-theme="dark"] .status-badge.active {
+    background: linear-gradient(135deg, rgba(55, 163, 114, 0.25), rgba(55, 163, 114, 0.12));
+    color: #4ade80;
+}
+
+.status-badge.returned {
+    background: linear-gradient(135deg, rgba(148, 163, 184, 0.15), rgba(148, 163, 184, 0.08));
+    color: #64748b;
+    border: 1px solid #94a3b8;
+    font-weight: 600;
+}
+
+[data-theme="dark"] .status-badge.returned {
+    background: linear-gradient(135deg, rgba(148, 163, 184, 0.25), rgba(148, 163, 184, 0.12));
+    color: #cbd5e1;
+}
+
+/* Tabla de datos */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.data-table thead {
+    background: var(--bg-tertiary);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.data-table th {
+    text-align: left;
+    padding: 12px 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.data-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.data-table tbody tr:hover {
+    background: var(--card-hover);
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Botones compactos para préstamos */
+.loan-item .btn {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    border-radius: 6px;
+}
+
+.loan-item .btn-sm {
+    padding: 4px 10px;
+    font-size: 0.75rem;
+}
+
+/* Responsive para tablets */
+@media (max-width: 768px) {
+    .loan-item-header {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .data-table {
+        font-size: 0.8rem;
+    }
+
+    .data-table th,
+    .data-table td {
+        padding: 8px;
+    }
+    
+    #activeLoansContainer {
+        max-height: 300px;
+    }
+}
