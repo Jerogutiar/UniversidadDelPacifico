@@ -225,6 +225,14 @@
     }
   }
 
+  /**
+   * Obtener todos los préstamos (activos y devueltos)
+   * @returns {Promise<Object>} Todos los préstamos
+   */
+  async function getAllLoans() {
+    return await getLoansHistory();
+  }
+
   // API pública
   window.LoansAPI = {
     LIBRARY_ITEMS,
@@ -232,6 +240,7 @@
     returnLoan,
     getActiveLoans,
     getLoansHistory,
+    getAllLoans,
     validateStudent,
     getStudentActiveLoans
   };

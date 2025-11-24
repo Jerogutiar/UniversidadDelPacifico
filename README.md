@@ -4,14 +4,15 @@ Sistema completo de gestión de carnets digitales para estudiantes de la Univers
 
 ## 🎯 Características Principales
 
-- **Gestión de Estudiantes**: Creación y edición de carnets digitales
-- **Panel de Funcionarios**: Dashboard administrativo completo
-- **Validación de Carnets**: Escáner de códigos de barras para validación
-- **Exportación de Datos**: Descarga de información en formato JSON y CSV
-- **Tema Claro/Oscuro**: Interfaz adaptativa con modo oscuro
+- **Gestión de Estudiantes**: Creación, edición y eliminación de carnets digitales
+- **Panel de Funcionarios**: Dashboard administrativo completo con estadísticas en tiempo real
+- **Validación de Carnets**: Escáner de códigos de barras para validación rápida
+- **Sistema de Préstamos**: Gestión completa de préstamos de biblioteca y laboratorio
+- **Exportación de Datos**: Descarga de estudiantes, funcionarios y préstamos en JSON y CSV
+- **Tema Claro/Oscuro**: Interfaz adaptativa con modo oscuro y diseño moderno
 - **Diseño Responsive**: Totalmente adaptado para móviles y tablets
-- **PDF Generation**: Descarga de carnets en formato PDF
-- **Autenticación Segura**: Sistema de login con hash SHA-256
+- **PDF Generation**: Descarga de carnets en formato PDF con código de barras
+- **Autenticación Segura**: Sistema de login con hash SHA-256 y sesiones persistentes
 
 ## 📋 Requisitos Previos
 
@@ -218,9 +219,11 @@ UniversidadDelPacifico/
 │   ├── api.js               # API centralizada de Supabase
 │   ├── auth.js              # Gestión de autenticación y sesiones
 │   ├── card.js              # Generación de carnet y código de barras
+│   ├── loans.js             # API de préstamos (biblioteca/laboratorio)
 │   ├── login.js             # Lógica de la página de login
 │   ├── modal.js             # Sistema de modales personalizados
 │   ├── staff.js             # Lógica del panel de funcionarios
+│   ├── staffLoans.js        # Interfaz de préstamos para funcionarios
 │   ├── student.js           # Lógica del panel de estudiantes
 │   └── utils.js             # Utilidades compartidas
 └── README.md                # Este archivo
@@ -251,19 +254,75 @@ UniversidadDelPacifico/
 - **Restricción**: No se puede descargar el carnet si tiene préstamos activos pendientes
 
 ### Funcionario
-- Dashboard con estadísticas
-- Crear/editar estudiantes
-- Lista de estudiantes con filtros
-- Restablecer contraseñas
-- Gestionar funcionarios
-- Validar carnets con escáner
-- **Gestión de préstamos (biblioteca/laboratorio)**
+- **Dashboard con estadísticas en tiempo real**
+  - Total de estudiantes
+  - Carnets activos, expirados y por vencer
+  - Préstamos activos
+  - Gráficos y métricas visuales
+- **Gestión de estudiantes**
+  - Crear, editar y eliminar estudiantes
+  - Lista con filtros avanzados (búsqueda, programa, sede, estado)
+  - Vista previa de carnet con información completa
+  - Restablecer contraseñas individuales
+- **Gestión de funcionarios**
+  - Registrar nuevos funcionarios
+  - Lista de funcionarios con búsqueda
+  - Restablecer contraseñas de funcionarios
+- **Validación de carnets**
+  - Escáner de códigos de barras
+  - Verificación de estado y vigencia
+- **Sistema de préstamos (biblioteca/laboratorio)**
   - Registrar préstamos con fecha/hora personalizada
-  - Ver préstamos activos
+  - Campo de búsqueda en préstamos activos
+  - Ver préstamos activos (muestra 3 por vista con scroll)
   - Marcar devoluciones
-  - Historial completo con filtros
+  - Historial completo con filtros múltiples
   - Préstamos de biblioteca (ítems predefinidos) y laboratorio (texto libre)
-- Exportar datos (JSON/CSV)
+- **Exportación de datos completa**
+  - **Estudiantes**: JSON y CSV con toda la información
+  - **Funcionarios**: JSON y CSV con datos de acceso
+  - **Préstamos Activos**: Préstamos en curso
+  - **Historial de Préstamos**: Préstamos devueltos
+  - **Todos los Préstamos**: Exportación completa
+  - Formatos compatibles con Excel y herramientas de análisis
+
+## 📊 Exportación de Datos
+
+El sistema incluye un módulo completo de exportación que permite descargar toda la información en formatos JSON y CSV:
+
+### Formatos Disponibles
+
+#### JSON
+- Incluye todos los datos completos
+- Fotos codificadas en Base64
+- Estructura completa de objetos
+- Ideal para backups y migración de datos
+- Fácil de procesar programáticamente
+
+#### CSV
+- Compatible con Microsoft Excel y Google Sheets
+- Tablas separadas por comas
+- Referencias de fotos por URL/placeholder
+- Perfecto para análisis de datos y reportes
+- Formato universal para importación
+
+### Tipos de Exportación
+
+| Tipo | JSON | CSV | Descripción |
+|------|------|-----|-------------|
+| **Estudiantes** | ✅ | ✅ | Todos los datos de estudiantes incluyendo fotos, programa, sede, estado |
+| **Funcionarios** | ✅ | ✅ | Lista de funcionarios con correos y roles |
+| **Préstamos Activos** | ✅ | ✅ | Préstamos en curso con información del estudiante y funcionario |
+| **Historial de Préstamos** | ✅ | ✅ | Préstamos devueltos con fechas y duración |
+| **Todos los Préstamos** | ✅ | ✅ | Exportación completa de todos los préstamos (activos y devueltos) |
+
+### Datos Incluidos en Exportaciones
+
+**Estudiantes**: Código, cédula, nombre, apellido, programa, sede, RH, fecha de expiración, estado, foto
+
+**Funcionarios**: ID, nombre, email, fecha de creación
+
+**Préstamos**: ID, código y nombre del estudiante, categoría (biblioteca/laboratorio), ítem, descripción, fecha de préstamo, fecha de devolución, días prestado, estado, funcionario responsable
 
 ## 📱 Responsive Design
 
@@ -289,6 +348,11 @@ El sistema está completamente optimizado para:
 - El formato de fecha es español legible (ej: "15 ENERO 2025")
 - Las contraseñas por defecto para nuevos estudiantes son su cédula
 - El sistema valida automáticamente carnets expirados
+- Los préstamos tienen eliminación en cascada (al eliminar estudiante se eliminan sus préstamos)
+- Las exportaciones JSON incluyen fotos en Base64, las CSV solo referencias
+- El sistema de búsqueda en préstamos activos filtra en tiempo real
+- Los colores de los botones son: Verde (Ver), Naranja (Editar), Rojo (Eliminar)
+- La lista de préstamos activos muestra 3 elementos completos antes de requerir scroll
 
 ## 🔧 Configuración
 

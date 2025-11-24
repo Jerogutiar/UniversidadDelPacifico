@@ -626,55 +626,132 @@
       return `
         <div class="student-item" data-code="${s.code}">
           <div class="student-info">
-            <div>
-              <strong>${s.name || 'N/A'}</strong>
-              <small>${s.lastname || ''}</small>
-              ${s.cedula ? `<small>C.C. ${s.cedula}</small>` : ''}
-              ${s.program ? `<small style="color: var(--accent-primary);">${s.program}</small>` : ''}
+            <div class="student-main-info">
+              <div class="student-code-inline">${s.code || ''}</div>
+              <strong class="student-name-full">${s.name || 'N/A'} ${s.lastname || ''}</strong>
+              ${s.cedula ? `<small class="student-cedula-text">C.C. ${s.cedula}</small>` : ''}
+              ${s.program ? `<small class="student-program-text">${s.program}</small>` : ''}
               ${statusBadge}
             </div>
-            <div class="student-code">${s.code || ''}</div>
+          </div>
+          <div class="student-actions">
+            <button class="btn btn-sm btn-info student-preview-btn" data-code="${s.code}" title="Ver carnet">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+              Ver
+            </button>
+            <button class="btn btn-sm btn-warning student-edit-btn" data-code="${s.code}" title="Editar estudiante">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 20h9"></path>
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+              </svg>
+              Editar
+            </button>
+            <button class="btn btn-sm btn-danger student-delete-btn" data-code="${s.code}" title="Eliminar estudiante">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+              </svg>
+              Eliminar
+            </button>
           </div>
         </div>
       `;
     }).join('');
 
-    // Event listeners para redirigir a sección de edición al hacer click
-    listNode.querySelectorAll('.student-item').forEach(el => {
-      el.addEventListener('click', async () => {
-        const code = el.getAttribute('data-code');
+    // Event listeners para botón vista previa
+    listNode.querySelectorAll('.student-preview-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const code = btn.getAttribute('data-code');
+        const student = await window.API.Students.getByCode(code);
+        if (student) {
+          // Mostrar modal con información del carnet
+          const statusInfo = getStudentStatus(student);
+          const modalContent = `
+            <div style="text-align: center; overflow: hidden;">
+              ${student.photo ? `<img src="${student.photo}" alt="Foto" style="max-width: 150px; max-height: 180px; border-radius: 8px; margin-bottom: 12px; object-fit: cover;">` : ''}
+              <h3 style="color: var(--text-primary); margin-bottom: 8px; font-size: 1.125rem;">${student.name} ${student.lastname}</h3>
+              <p style="color: var(--text-secondary); margin-bottom: 12px; font-size: 0.9375rem;"><strong>Código:</strong> ${student.code}</p>
+              <div style="text-align: left; background: var(--bg-tertiary); padding: 14px; border-radius: 8px;">
+                <p style="margin-bottom: 6px; font-size: 0.875rem;"><strong>Cédula:</strong> ${student.cedula}</p>
+                <p style="margin-bottom: 6px; font-size: 0.875rem;"><strong>Programa:</strong> ${student.program}</p>
+                <p style="margin-bottom: 6px; font-size: 0.875rem;"><strong>Sede:</strong> ${student.sede}</p>
+                ${student.rh ? `<p style="margin-bottom: 6px; font-size: 0.875rem;"><strong>RH:</strong> ${student.rh}</p>` : ''}
+                <p style="margin-bottom: 6px; font-size: 0.875rem;"><strong>Válido hasta:</strong> ${student.expiry}</p>
+                <p style="margin-bottom: 0; font-size: 0.875rem;"><strong>Estado:</strong> <span style="color: ${statusInfo.color}; font-weight: 600;">${statusInfo.text}</span></p>
+              </div>
+            </div>
+          `;
+          window.showModal.info('Información del Carnet', modalContent);
+        }
+      });
+    });
+
+    // Event listeners para botón editar
+    listNode.querySelectorAll('.student-edit-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const code = btn.getAttribute('data-code');
         const student = await window.API.Students.getByCode(code);
         if (student) {
           // Cambiar a la sección de crear/editar estudiantes
-          document.querySelectorAll('.dashboard-nav-item').forEach(item => {
-            item.classList.remove('active');
-          });
-          const createTab = document.querySelector('[data-section="students-create"]');
-          if (createTab) {
-            createTab.classList.add('active');
-          }
-
-          // Cambiar la sección activa
-          document.querySelectorAll('.content-section').forEach(section => {
-            section.classList.remove('active');
-          });
-          const createSection = document.getElementById('students-create-section');
-          if (createSection) {
-            createSection.classList.add('active');
-          }
-
-          // Actualizar título
-          const pageTitle = document.getElementById('pageTitle');
-          if (pageTitle) {
-            pageTitle.textContent = 'Administrar Estudiante';
-          }
-
+          switchSection('students-create');
           // Cargar datos en el formulario
           fillFormFromStudent(student);
           window.showModal.info('Cargado', 'Datos del estudiante cargados. Puedes editarlos ahora.');
         }
       });
     });
+
+    // Event listeners para botón eliminar
+    listNode.querySelectorAll('.student-delete-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const code = btn.getAttribute('data-code');
+        const student = await window.API.Students.getByCode(code);
+        if (student) {
+          const confirmDelete = await window.showModal.confirm(
+            'Eliminar Estudiante',
+            `¿Estás seguro de eliminar el estudiante ${student.name} ${student.lastname} (${student.code})? Esta acción no se puede deshacer y eliminará todos sus datos incluyendo préstamos asociados.`
+          );
+          if (confirmDelete) {
+            try {
+              await window.API.Students.delete(code);
+              window.showModal.success('Eliminado', `El estudiante ${student.name} ${student.lastname} ha sido eliminado correctamente.`);
+              // Recargar la lista y estadísticas
+              renderStudentList();
+              loadDashboardStats();
+              loadFilterOptions();
+            } catch (error) {
+              console.error('Error al eliminar:', error);
+              window.showModal.error('Error', error.message || 'No se pudo eliminar el estudiante.');
+            }
+          }
+        }
+      });
+    });
+  }
+
+  /**
+   * Obtiene el estado formateado del estudiante
+   */
+  function getStudentStatus(student) {
+    const expired = isExpired(student.expiry);
+    const expiring = isExpiringSoon(student.expiry);
+    const isActive = student.active !== false;
+
+    if (!isActive) {
+      return { text: 'INACTIVO', color: '#ef4444' };
+    } else if (expired) {
+      return { text: 'EXPIRADO', color: '#ef4444' };
+    } else if (expiring) {
+      return { text: 'POR VENCER', color: '#f59e0b' };
+    } else {
+      return { text: 'ACTIVO', color: '#37a372' };
+    }
   }
 
   /**
@@ -898,24 +975,57 @@
   async function handleExport() {
     const type = document.getElementById('exportType').value;
 
+    if (!type) {
+      window.showModal.warning('Seleccione tipo', 'Por favor seleccione el tipo de datos a exportar.');
+      return;
+    }
+
     try {
+      let data, filename;
+
       if (type.includes('students')) {
-        const data = await window.API.Students.listAll();
-        const filename = type === 'students-json' ? 'estudiantes.json' : 'estudiantes.csv';
+        data = await window.API.Students.listAll();
+        filename = type === 'students-json' ? 'estudiantes.json' : 'estudiantes.csv';
         if (type === 'students-json') {
           download(filename, JSON.stringify(data, null, 2), 'application/json');
         } else {
           download(filename, toCsv(data), 'text/csv');
         }
       } else if (type.includes('staff')) {
-        const data = await window.API.Staff.listAll();
-        const filename = type === 'staff-json' ? 'funcionarios.json' : 'funcionarios.csv';
+        data = await window.API.Staff.listAll();
+        filename = type === 'staff-json' ? 'funcionarios.json' : 'funcionarios.csv';
         if (type === 'staff-json') {
           download(filename, JSON.stringify(data, null, 2), 'application/json');
         } else {
           download(filename, toCsv(data), 'text/csv');
         }
+      } else if (type.includes('loans')) {
+        // Obtener préstamos según el tipo
+        let loansResult;
+        if (type.includes('active')) {
+          loansResult = await window.LoansAPI.getActiveLoans();
+          filename = type === 'loans-active-json' ? 'prestamos-activos.json' : 'prestamos-activos.csv';
+        } else if (type.includes('history')) {
+          loansResult = await window.LoansAPI.getLoansHistory();
+          filename = type === 'loans-history-json' ? 'historial-prestamos.json' : 'historial-prestamos.csv';
+        } else if (type.includes('all')) {
+          loansResult = await window.LoansAPI.getAllLoans();
+          filename = type === 'loans-all-json' ? 'todos-los-prestamos.json' : 'todos-los-prestamos.csv';
+        }
+
+        if (!loansResult.success) {
+          throw new Error(loansResult.error || 'Error al obtener préstamos');
+        }
+
+        data = loansResult.data;
+
+        if (type.endsWith('-json')) {
+          download(filename, JSON.stringify(data, null, 2), 'application/json');
+        } else {
+          download(filename, toLoansCsv(data), 'text/csv');
+        }
       }
+      
       window.showModal.success('Exportado', 'Datos exportados correctamente.');
     } catch (err) {
       window.showModal.error('Error', err.message || 'No se pudo exportar');
@@ -943,6 +1053,48 @@
         return `"${(value ?? '').toString().replace(/"/g, '""')}"`;
       }).join(','));
     }
+    return lines.join('\n');
+  }
+
+  function toLoansCsv(loans) {
+    if (!loans.length) return '';
+    
+    const headers = [
+      'ID',
+      'Código Estudiante',
+      'Nombre Estudiante',
+      'Categoría',
+      'Ítem',
+      'Descripción',
+      'Fecha Préstamo',
+      'Fecha Devolución',
+      'Días Prestado',
+      'Estado',
+      'Funcionario',
+      'Notas'
+    ];
+    
+    const lines = [headers.join(',')];
+    
+    for (const loan of loans) {
+      const row = [
+        loan.id || '',
+        loan.student_code || '',
+        loan.student_name || '',
+        loan.category === 'biblioteca' ? 'Biblioteca' : 'Laboratorio',
+        loan.item_type || '',
+        loan.item_description || '',
+        loan.borrowed_date || '',
+        loan.returned_date || 'Activo',
+        loan.days_borrowed || '0',
+        loan.returned_date ? 'Devuelto' : 'Activo',
+        loan.staff_name || '',
+        loan.notes || ''
+      ];
+      
+      lines.push(row.map(value => `"${value.toString().replace(/"/g, '""')}"`).join(','));
+    }
+    
     return lines.join('\n');
   }
 

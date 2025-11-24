@@ -50,9 +50,279 @@
 }
 
 /* ============================================
-   ESTADÍSTICAS DEL DASHBOARD
+   ESTADÍSTICAS DEL DASHBOARD - DISEÑO PROFESIONAL
    ============================================ */
 
+/* Grid de estadísticas */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Tarjeta estadística */
+.stat-card {
+  position: relative;
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  cursor: default;
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, var(--udp-blue), var(--udp-green));
+  transition: height 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border-color: transparent;
+}
+
+.stat-card:hover::before {
+  height: 6px;
+}
+
+/* Variantes de color para la barra superior */
+.stat-card-primary::before {
+  background: linear-gradient(90deg, #2596be, #4db8d4);
+}
+
+.stat-card-success::before {
+  background: linear-gradient(90deg, #37a372, #5bb889);
+}
+
+.stat-card-warning::before {
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+}
+
+.stat-card-info::before {
+  background: linear-gradient(90deg, #8b5cf6, #a78bfa);
+}
+
+/* Contenido de la tarjeta */
+.stat-card-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+/* Wrapper del ícono */
+.stat-icon-wrapper {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover .stat-icon-wrapper {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* Íconos con gradientes */
+.stat-icon-blue {
+  background: linear-gradient(135deg, rgba(37, 150, 190, 0.1), rgba(77, 184, 212, 0.2));
+  border: 2px solid rgba(37, 150, 190, 0.2);
+}
+
+.stat-icon-green {
+  background: linear-gradient(135deg, rgba(55, 163, 114, 0.1), rgba(91, 184, 137, 0.2));
+  border: 2px solid rgba(55, 163, 114, 0.2);
+}
+
+.stat-icon-orange {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.2));
+  border: 2px solid rgba(245, 158, 11, 0.2);
+}
+
+.stat-icon-purple {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(167, 139, 250, 0.2));
+  border: 2px solid rgba(139, 92, 246, 0.2);
+}
+
+/* Ícono SVG */
+.stat-icon {
+  width: 32px;
+  height: 32px;
+  stroke-width: 2.5;
+}
+
+.stat-icon-blue .stat-icon {
+  stroke: #2596be;
+}
+
+.stat-icon-green .stat-icon {
+  stroke: #37a372;
+}
+
+.stat-icon-orange .stat-icon {
+  stroke: #f59e0b;
+}
+
+.stat-icon-purple .stat-icon {
+  stroke: #8b5cf6;
+}
+
+/* Detalles de la estadística */
+.stat-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.stat-value {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Efecto hover con color específico para cada tarjeta */
+.stat-card-primary:hover .stat-value {
+  background: linear-gradient(135deg, #2596be, #4db8d4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stat-card-success:hover .stat-value {
+  background: linear-gradient(135deg, #37a372, #5bb889);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stat-card-warning:hover .stat-value {
+  background: linear-gradient(135deg, #f59e0b, #fbbf24);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stat-card-info:hover .stat-value {
+  background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.stat-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.stat-trend {
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+
+/* Animación de entrada */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stat-card {
+  animation: slideInUp 0.5s ease-out;
+}
+
+.stat-card:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.stat-card:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.stat-card:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+.stat-card:nth-child(4) {
+  animation-delay: 0.3s;
+}
+
+/* Responsive para tarjetas estadísticas */
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .stat-card {
+    padding: 20px;
+  }
+  
+  .stat-card-content {
+    gap: 16px;
+  }
+  
+  .stat-icon-wrapper {
+    width: 56px;
+    height: 56px;
+  }
+  
+  .stat-icon {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .stat-value {
+    font-size: 2rem;
+  }
+}
+
+/* Clases de utilidad antiguas (mantener compatibilidad) */
 .text-2xl {
   font-size: 1.5rem;
   line-height: 1.2;
@@ -268,43 +538,108 @@
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
+  padding-top: 4px;
 }
 
 /* Scroll para lista de funcionarios y estudiantes */
-#staffList.staff-list,
-#studentList.student-list {
-  max-height: 450px;
+#staffList.staff-list {
+  max-height: 320px;
   overflow-y: auto;
   padding-right: 8px;
+  padding-top: 6px;
 }
 
-/* Scrollbar personalizada para listas de funcionarios y estudiantes */
+/* Contenedor de préstamos activos */
+#activeLoansContainer {
+  max-height: 600px !important;
+  overflow-y: auto !important;
+  padding-right: 8px;
+  padding-top: 6px;
+}
+
+/* Contenedor de historial de préstamos */
+#loansHistoryContainer {
+  max-height: 400px !important;
+  overflow-y: auto !important;
+  padding-right: 8px;
+  padding-top: 6px;
+}
+
+/* Estilos para los elementos de préstamos */
+.loan-item {
+  padding: 16px;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  margin-bottom: 12px;
+  transition: all 0.3s ease;
+}
+
+.loan-item:first-child {
+  margin-top: 2px;
+  border: 1px solid var(--border-color);
+}
+
+.loan-item:hover {
+  border-color: var(--accent-primary);
+  background: var(--card-hover);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.loan-item:first-child:hover {
+  border-color: var(--accent-primary);
+  margin-top: 0px;
+  transform: translateY(-2px);
+}
+
+#studentList.student-list {
+  max-height: 600px;
+  overflow-y: auto;
+  padding-right: 8px;
+  padding-top: 6px;
+}
+
+/* Scrollbar personalizada para listas de funcionarios, estudiantes y préstamos */
 #staffList.staff-list::-webkit-scrollbar,
-#studentList.student-list::-webkit-scrollbar {
-  width: 8px;
+#studentList.student-list::-webkit-scrollbar,
+#activeLoansContainer::-webkit-scrollbar,
+#loansHistoryContainer::-webkit-scrollbar {
+  width: 10px;
 }
 
 #staffList.staff-list::-webkit-scrollbar-track,
-#studentList.student-list::-webkit-scrollbar-track {
+#studentList.student-list::-webkit-scrollbar-track,
+#activeLoansContainer::-webkit-scrollbar-track,
+#loansHistoryContainer::-webkit-scrollbar-track {
   background: var(--bg-tertiary);
   border-radius: 10px;
+  margin: 4px 0;
 }
 
 #staffList.staff-list::-webkit-scrollbar-thumb,
-#studentList.student-list::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, var(--udp-blue), var(--primary-green));
+#studentList.student-list::-webkit-scrollbar-thumb,
+#activeLoansContainer::-webkit-scrollbar-thumb,
+#loansHistoryContainer::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--udp-blue), var(--udp-green));
   border-radius: 10px;
+  border: 2px solid var(--bg-tertiary);
   transition: all 0.3s ease;
 }
 
 #staffList.staff-list::-webkit-scrollbar-thumb:hover,
-#studentList.student-list::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #5eb8e0, #4ade80);
+#studentList.student-list::-webkit-scrollbar-thumb:hover,
+#activeLoansContainer::-webkit-scrollbar-thumb:hover,
+#loansHistoryContainer::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--udp-blue-light), var(--udp-green-light));
+  border-color: var(--bg-secondary);
 }
 
 /* Firefox scrollbar */
 #staffList.staff-list,
-#studentList.student-list {
+#studentList.student-list,
+#activeLoansContainer,
+#loansHistoryContainer {
   scrollbar-width: thin;
   scrollbar-color: var(--udp-blue) var(--bg-tertiary);
 }
@@ -315,32 +650,45 @@
    ============================================ */
 .student-item,
 .staff-item {
-  padding: 16px;
+  padding: 20px;
   background: var(--card-bg);
   border: 1px solid var(--border-color);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  border-radius: 12px;
+  transition: all 0.3s ease;
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
-  overflow: hidden;
+  overflow: visible;
   word-wrap: break-word;
-  /* Configuración de márgenes para evitar desbordamiento */
   margin: 0;
-  /* Layout horizontal para botón a la derecha */
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 16px;
+  gap: 20px;
+  position: relative;
+}
+
+/* Asegurar que el primer elemento tenga el mismo comportamiento */
+.student-item:first-child,
+.staff-item:first-child {
+  margin-top: 2px;
+  border: 1px solid var(--border-color);
+}
+
+.student-item:first-child:hover,
+.staff-item:first-child:hover {
+  border-color: var(--accent-primary);
+  margin-top: 0px;
+  transform: translateY(-2px);
 }
 
 .student-item:hover,
 .staff-item:hover {
   border-color: var(--accent-primary);
+  border-top-color: var(--accent-primary);
   background: var(--card-hover);
-  box-shadow: var(--shadow-sm);
-  /* Efecto hover sin transformación */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
 }
 
 .student-item.active,
@@ -354,20 +702,51 @@
 .student-info,
 .staff-info {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
+  flex-direction: column;
+  gap: 12px;
   flex: 1;
   min-width: 0;
-  flex-wrap: wrap;
 }
 
-.student-info>div:first-child,
-.staff-info>div:first-child {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  max-width: calc(100% - 100px);
+.student-main-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.student-code-inline {
+  display: inline-block;
+  font-weight: 700;
+  color: var(--accent-primary);
+  font-size: 0.875rem;
+  padding: 4px 12px;
+  background: linear-gradient(135deg, rgba(37, 150, 190, 0.1), rgba(55, 163, 114, 0.1));
+  border-radius: 6px;
+  border: 1px solid rgba(37, 150, 190, 0.2);
+  width: fit-content;
+  letter-spacing: 0.5px;
+}
+
+.student-name-full {
+  font-size: 1.0625rem;
+  color: var(--text-primary);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.student-cedula-text,
+.student-program-text {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  margin-top: 2px;
+  line-height: 1.5;
+}
+
+.student-program-text {
+  color: var(--accent-secondary);
+  font-weight: 500;
 }
 
 .student-code,
@@ -385,21 +764,61 @@
   color: var(--text-primary);
   font-weight: 600;
   margin-bottom: 4px;
+  font-size: 1rem;
 }
 
 .student-item small,
 .staff-item small {
   display: block;
   color: var(--text-secondary);
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   margin-bottom: 4px;
+  line-height: 1.5;
 }
 
-/* Botones de acción en items (no encoger) */
+/* Botones de acción en items */
+.student-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+  align-items: flex-end;
+}
+
 .staff-item > .btn,
 .student-item > .btn {
   flex-shrink: 0;
   white-space: nowrap;
+}
+
+.student-preview-btn,
+.student-edit-btn,
+.student-delete-btn {
+  width: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px !important;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.student-preview-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(55, 163, 114, 0.3);
+}
+
+.student-edit-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(245, 158, 11, 0.3);
+}
+
+.student-delete-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
 }
 
 /* Status badges */
@@ -557,9 +976,17 @@
     grid-template-columns: 1fr;
   }
 
-  /* Ajustar altura del scroll de funcionarios en tablet */
+  /* Ajustar altura del scroll de funcionarios, estudiantes y préstamos en tablet */
   #staffList.staff-list {
-    max-height: 350px;
+    max-height: 300px;
+  }
+  
+  #studentList.student-list {
+    max-height: 500px;
+  }
+  
+  #activeLoansContainer {
+    max-height: 520px !important;
   }
 
   /* Configuración de overflow para listas */
@@ -609,10 +1036,57 @@
     margin: 0 0 8px 0;
     width: 100%;
     max-width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 16px;
   }
 
-  /* Scroll más pequeño en móvil para funcionarios */
+  .student-info,
+  .staff-info {
+    width: 100%;
+    min-width: 100%;
+  }
+
+  .student-main-info {
+    width: 100%;
+  }
+
+  .student-code-inline,
+  .student-name-full,
+  .student-cedula-text,
+  .student-program-text {
+    width: 100%;
+    word-break: break-word;
+    white-space: normal;
+  }
+
+  /* Scroll más pequeño en móvil para funcionarios, estudiantes y préstamos */
   #staffList.staff-list {
     max-height: 300px;
+  }
+  
+  #studentList.student-list {
+    max-height: 400px;
+  }
+  
+  #activeLoansContainer {
+    max-height: 460px !important;
+  }
+  
+  .student-actions {
+    flex-direction: row;
+    width: 100%;
+    justify-content: stretch;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .student-preview-btn,
+  .student-edit-btn,
+  .student-delete-btn {
+    flex: 1;
+    min-width: 90px;
+    width: auto;
   }
 }

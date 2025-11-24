@@ -49,6 +49,14 @@
     if (filterLoanCategory) filterLoanCategory.addEventListener('change', applyLoansFilters);
     if (filterLoanStatus) filterLoanStatus.addEventListener('change', applyLoansFilters);
 
+    // Event listener para búsqueda en préstamos activos
+    const searchActiveLoanInput = document.getElementById('searchActiveLoanInput');
+    if (searchActiveLoanInput) {
+      searchActiveLoanInput.addEventListener('input', (e) => {
+        loadActiveLoans(e.target.value);
+      });
+    }
+
     // Cargar datos iniciales
     loadActiveLoans();
     loadLoansHistory();
@@ -192,7 +200,7 @@
   // CARGAR PRÉSTAMOS ACTIVOS
   // ============================================
 
-  async function loadActiveLoans() {
+  async function loadActiveLoans(searchTerm = '') {
     const container = document.getElementById('activeLoansContainer');
     const countElement = document.getElementById('activeLoansCount');
 
@@ -205,15 +213,31 @@
         return;
     }
 
-    const loans = result.data;
+    let loans = result.data;
+
+    // Filtrar por código de estudiante si hay término de búsqueda
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase().trim();
+      loans = loans.filter(loan => 
+        loan.student_code.toLowerCase().includes(term) ||
+        loan.student_name.toLowerCase().includes(term)
+      );
+    }
 
     if (loans.length === 0) {
-        container.innerHTML = '<p class="text-secondary">No hay préstamos activos</p>';
+        container.innerHTML = searchTerm 
+          ? '<p class="text-secondary">No se encontraron préstamos con ese código</p>'
+          : '<p class="text-secondary">No hay préstamos activos</p>';
         countElement.textContent = '0 préstamos activos';
         return;
     }
 
-    countElement.textContent = `${loans.length} préstamo${loans.length !== 1 ? 's' : ''} activo${loans.length !== 1 ? 's' : ''}`;
+    const totalLoans = result.data.length;
+    if (searchTerm && loans.length !== totalLoans) {
+      countElement.textContent = `${loans.length} de ${totalLoans} préstamo${totalLoans !== 1 ? 's' : ''} activo${totalLoans !== 1 ? 's' : ''}`;
+    } else {
+      countElement.textContent = `${loans.length} préstamo${loans.length !== 1 ? 's' : ''} activo${loans.length !== 1 ? 's' : ''}`;
+    }
 
     const loansHTML = loans.map(loan => `
     <div class="loan-item">

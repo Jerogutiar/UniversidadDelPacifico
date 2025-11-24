@@ -100,7 +100,7 @@
   border-radius: 16px;
   max-width: 500px;
   width: 90%;
-  max-height: 90vh;
+  max-height: 85vh;
   overflow-y: auto;
   overflow-x: hidden;
   box-shadow: var(--shadow-lg);
@@ -114,6 +114,18 @@
   left: auto;
   right: auto;
   border: 1px solid var(--border-color);
+}
+
+/* Para modales de info (vista previa), reducir el tamaño */
+.custom-modal.modal-info .custom-modal-content {
+  max-height: 75vh;
+  overflow: hidden;
+}
+
+.custom-modal.modal-info .custom-modal-body {
+  max-height: calc(75vh - 120px);
+  overflow: hidden;
+  padding: 20px;
 }
 
 .custom-modal.active .custom-modal-content {

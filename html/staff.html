@@ -153,93 +153,78 @@
       <div class="dashboard-content">
         <!-- Dashboard Section -->
         <section id="dashboard-section" class="content-section active">
-          <!-- Mensaje de bienvenida -->
-          <div class="card mb-6" style="background: linear-gradient(135deg, var(--udp-blue), var(--primary-green)); border: none;">
-            <div class="card-body" style="padding: 32px;">
-              <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px;">
-                <div style="flex: 1; min-width: 250px;">
-                  <h1 style="color: white; font-size: 1.75rem; font-weight: 700; margin-bottom: 8px;">
-                    ¡Bienvenido al Panel de Administración!
-                  </h1>
-                  <p style="color: rgba(255, 255, 255, 0.9); font-size: 1rem; line-height: 1.6;" id="welcomeMessage">
-                    Sistema de Gestión de Carnets Digitales - Universidad del Pacífico
-                  </p>
-                </div>
-                <div style="width: 80px; height: 80px; background: rgba(255, 255, 255, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px);">
-                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                    <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-                    <path d="M2 17l10 5 10-5"></path>
-                    <path d="M2 12l10 5 10-5"></path>
+          <!-- Tarjetas estadísticas mejoradas -->
+          <div class="stats-grid mb-6">
+            <div class="stat-card stat-card-primary">
+              <div class="stat-card-content">
+                <div class="stat-icon-wrapper stat-icon-blue">
+                  <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
                   </svg>
                 </div>
+                <div class="stat-details">
+                  <p class="stat-label">Total Estudiantes</p>
+                  <h3 class="stat-value" id="statTotalStudents">0</h3>
+                  <div class="stat-footer">
+                    <span class="stat-trend">Registrados en el sistema</span>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <div class="card">
-              <div class="card-body">
-                <div class="flex items-center justify-between">
-                  <div>
-                    <p class="text-tertiary mb-1">Total Estudiantes</p>
-                    <h2 class="text-2xl font-bold" id="statTotalStudents">0</h2>
-                  </div>
-                  <div style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2">
-                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                      <circle cx="12" cy="7" r="4"></circle>
-                    </svg>
+            <div class="stat-card stat-card-success">
+              <div class="stat-card-content">
+                <div class="stat-icon-wrapper stat-icon-green">
+                  <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 12l2 2 4-4"></path>
+                    <circle cx="12" cy="12" r="10"></circle>
+                  </svg>
+                </div>
+                <div class="stat-details">
+                  <p class="stat-label">Carnets Activos</p>
+                  <h3 class="stat-value" id="statActiveCards">0</h3>
+                  <div class="stat-footer">
+                    <span class="stat-trend">Carnets vigentes</span>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="card">
-              <div class="card-body">
-                <div class="flex items-center justify-between">
-                  <div>
-                    <p class="text-tertiary mb-1">Carnets Activos</p>
-                    <h2 class="text-2xl font-bold" id="statActiveCards">0</h2>
-                  </div>
-                  <div style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2">
-                      <path d="M9 12l2 2 4-4"></path>
-                      <circle cx="12" cy="12" r="10"></circle>
-                    </svg>
+
+            <div class="stat-card stat-card-warning">
+              <div class="stat-card-content">
+                <div class="stat-icon-wrapper stat-icon-orange">
+                  <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                  </svg>
+                </div>
+                <div class="stat-details">
+                  <p class="stat-label">Por Vencer</p>
+                  <h3 class="stat-value" id="statExpiring">0</h3>
+                  <div class="stat-footer">
+                    <span class="stat-trend">Requieren renovación</span>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="card">
-              <div class="card-body">
-                <div class="flex items-center justify-between">
-                  <div>
-                    <p class="text-tertiary mb-1">Por Vencer</p>
-                    <h2 class="text-2xl font-bold" id="statExpiring">0</h2>
-                  </div>
-                  <div style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--warning)" stroke-width="2">
-                      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                      <line x1="12" y1="9" x2="12" y2="13"></line>
-                      <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                    </svg>
-                  </div>
+
+            <div class="stat-card stat-card-info">
+              <div class="stat-card-content">
+                <div class="stat-icon-wrapper stat-icon-purple">
+                  <svg class="stat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
                 </div>
-              </div>
-            </div>
-            <div class="card">
-              <div class="card-body">
-                <div class="flex items-center justify-between">
-                  <div>
-                    <p class="text-tertiary mb-1">Funcionarios</p>
-                    <h2 class="text-2xl font-bold" id="statStaff">0</h2>
-                  </div>
-                  <div style="width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" stroke-width="2">
-                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                      <circle cx="9" cy="7" r="4"></circle>
-                      <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                      <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                    </svg>
+                <div class="stat-details">
+                  <p class="stat-label">Funcionarios</p>
+                  <h3 class="stat-value" id="statStaff">0</h3>
+                  <div class="stat-footer">
+                    <span class="stat-trend">Personal administrativo</span>
                   </div>
                 </div>
               </div>
@@ -606,7 +591,7 @@
                   <!-- Descripción adicional (opcional) -->
                   <div class="form-group">
                     <label for="loanDescription" class="form-label">Descripción adicional (opcional)</label>
-                    <textarea id="loanDescription" class="form-input" rows="2" placeholder="Detalles adicionales del ítem o condiciones..."></textarea>
+                    <textarea id="loanDescription" class="form-textarea" rows="3" placeholder="Detalles adicionales del ítem o condiciones..."></textarea>
                   </div>
 
                   <div class="form-actions">
@@ -623,7 +608,10 @@
                 <p class="card-subtitle" id="activeLoansCount">0 préstamos activos</p>
               </div>
               <div class="card-body">
-                <div id="activeLoansContainer" style="max-height: 500px; overflow-y: auto;">
+                <div class="form-group mb-3">
+                  <input type="text" id="searchActiveLoanInput" class="form-input" placeholder="Buscar por código de estudiante..." />
+                </div>
+                <div id="activeLoansContainer">
                   <p class="text-secondary">No hay préstamos activos</p>
                 </div>
               </div>
@@ -662,7 +650,7 @@
               </div>
 
               <!-- Tabla de historial -->
-              <div id="loansHistoryContainer" style="max-height: 400px; overflow-y: auto;">
+              <div id="loansHistoryContainer">
                 <p class="text-secondary">Cargando historial...</p>
               </div>
             </div>
@@ -681,17 +669,35 @@
                 <div class="form-group">
                   <label for="exportType" class="form-label">Tipo de exportación</label>
                   <select id="exportType" class="form-select">
-                    <option value="students-json">Estudiantes (JSON)</option>
-                    <option value="students-csv">Estudiantes (CSV)</option>
-                    <option value="staff-json">Funcionarios (JSON)</option>
-                    <option value="staff-csv">Funcionarios (CSV)</option>
+                    <option value="">Seleccione tipo de datos</option>
+                    <optgroup label="Estudiantes">
+                      <option value="students-json">Estudiantes (JSON)</option>
+                      <option value="students-csv">Estudiantes (CSV)</option>
+                    </optgroup>
+                    <optgroup label="Funcionarios">
+                      <option value="staff-json">Funcionarios (JSON)</option>
+                      <option value="staff-csv">Funcionarios (CSV)</option>
+                    </optgroup>
+                    <optgroup label="Préstamos">
+                      <option value="loans-active-json">Préstamos Activos (JSON)</option>
+                      <option value="loans-active-csv">Préstamos Activos (CSV)</option>
+                      <option value="loans-history-json">Historial de Préstamos (JSON)</option>
+                      <option value="loans-history-csv">Historial de Préstamos (CSV)</option>
+                      <option value="loans-all-json">Todos los Préstamos (JSON)</option>
+                      <option value="loans-all-csv">Todos los Préstamos (CSV)</option>
+                    </optgroup>
                   </select>
                 </div>
                 <div class="form-group" style="display: flex; align-items: flex-end;">
                   <button class="btn btn-primary btn-green" id="exportDownloadBtn" style="width: 100%;">Descargar</button>
                 </div>
               </div>
-              <small class="form-help">Las fotos se incluyen en las descargas (JSON incluye base64, CSV referencia)</small>
+              <small class="form-help">
+                <strong>Formatos disponibles:</strong><br>
+                • JSON: Incluye todos los datos y fotos en base64<br>
+                • CSV: Tabla compatible con Excel, referencias de fotos por URL<br>
+                • Los préstamos incluyen información del estudiante y funcionario
+              </small>
             </div>
           </div>
         </section>
@@ -709,7 +715,7 @@
   <script src="../js/auth.js"></script>
   <script src="../js/card.js"></script>
   <script src="../js/loans.js"></script>
-  <script src="../js/staff-loans.js"></script>
+  <script src="../js/staffLoans.js"></script>
   <script src="../js/staff.js"></script>
 </body>
 </html>

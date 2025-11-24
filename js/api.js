@@ -369,6 +369,24 @@
 
       if (error) throw new Error(error.message);
       return true;
+    },
+
+    /**
+     * Elimina un estudiante
+     * @param {string} code - Código del estudiante
+     * @returns {Promise<boolean>} true si se eliminó
+     */
+    async delete(code) {
+      const supabase = await getSupabase();
+      const sanitizedCode = sanitize(code);
+
+      const { error } = await supabase
+        .from('students')
+        .delete()
+        .eq('code', sanitizedCode);
+
+      if (error) throw new Error(error.message);
+      return true;
     }
   };
 
